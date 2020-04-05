@@ -1,0 +1,20 @@
+{
+  "name": "server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "docker": "cd .. && docker-compose -f docker-compose.yml",
+    "development": "npm run docker -- -f docker-compose.development.yml",
+    "production": "npm run docker -- -f docker-compose.production.yml",
+    "build": "npm run development -- build",
+    "start": "npm run development -- up",
+    "deploy": "npm run production -- up --build"
+  },
+  "dependencies": {
+    "compression": "^1.7.0",
+    "express": "^4.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.0"
+  }
+}
