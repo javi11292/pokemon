@@ -35,10 +35,6 @@ export class Game {
     })
   }
 
-  destroy = () => {
-    window.removeEventListener("action", this.handleAction)
-  }
-
   handleAction = ({ detail }) => {
     this.action = detail
   }

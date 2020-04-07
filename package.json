@@ -23,9 +23,6 @@
     "react-snap": "^1.23.0"
   },
   "reactSnap": {
-    "puppeteerArgs": [
-      "--no-sandbox"
-    ],
     "asyncScriptTags": true,
     "inlineCss": true
   },
