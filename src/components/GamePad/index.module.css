@@ -9,24 +9,20 @@
 
 .container {
   grid-area: var(--area);
-  width: 3.6rem;
-  height: 3.6rem;
+  width: 4rem;
+  height: 4rem;
   display: grid;
   grid-template-rows: 1fr auto;
   transform: rotate(var(--rotate));
   opacity: 0.75;
 }
 
-.button {
-  border-radius: 0.25rem 0.25rem 0.15rem 0.15rem;
-  background: var(--color);
+.button>* {
+  fill: var(--color);
 }
 
-.border {
-  border-left: 1.5rem solid transparent;
-  border-right: 1.5rem solid transparent;
-  border-top: 1.5rem solid var(--color);
-  margin-top: -1px;
-  padding-top: 0.25rem;
-  margin-bottom: -35%;
+.button path:last-child {
+  fill: transparent;
+  stroke: black;
+  stroke-width: 2px;
 }

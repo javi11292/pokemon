@@ -18,7 +18,7 @@ function useLogic() {
     window.dispatchEvent(new CustomEvent("action", { detail: null }))
   }
 
-  return { buttonPress, handlePress }
+  return { buttonPress, handlePress, handleRelease }
 }
 
 export default useLogic
