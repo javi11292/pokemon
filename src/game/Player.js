@@ -86,35 +86,21 @@ export class Player {
     addSpriteSheet(this)
   }
 
-  updatePosition = shouldStop => {
-    if (shouldStop && !this.speed.x && !this.speed.y) return
+  updatePosition = (dimension, move) => {
+    if (!this.speed[dimension]) return
 
-    const speedX = this.speed.x * SPEED
-    const speedY = this.speed.y * SPEED
+    const speed = this.speed[dimension] * SPEED
+    const module = Math.abs(this.position[dimension] % SIZE)
 
-    const xModule = Math.abs(this.position.x % SIZE)
-    const yModule = Math.abs(this.position.y % SIZE)
+    const offset = module && (this.speed[dimension] === 1 ? module : SIZE - module)
 
-    if (!shouldStop && !xModule && !yModule) {
-      this.position.x += speedX
-      this.position.y += speedY
-    }
-
-    const xOffset = xModule && (this.speed.x === 1 ? xModule : SIZE - xModule)
-    const yOffset = yModule && (this.speed.y === 1 ? yModule : SIZE - yModule)
-
-    if (xModule) {
-      const normalizedOffset = this.position.x < 0 ? xOffset : SIZE - xOffset
-      this.position.x += normalizedOffset > SPEED ? speedX : normalizedOffset * this.speed.x
+    if (module) {
+      const normalizedOffset = this.position[dimension] <= 0 ? offset : SIZE - offset
+      this.position[dimension] += normalizedOffset >= SPEED ? speed : normalizedOffset * this.speed[dimension]
+    } else if (move) {
+      this.position[dimension] += speed
     } else {
-      this.speed.x = 0
-    }
-
-    if (yModule) {
-      const normalizedOffset = this.position.y < 0 ? yOffset : SIZE - yOffset
-      this.position.y += normalizedOffset > SPEED ? speedY : normalizedOffset * this.speed.y
-    } else {
-      this.speed.y = 0
+      this.speed[dimension] = 0
     }
   }
 
@@ -127,9 +113,7 @@ export class Player {
     if (nextX !== floorX || nextY !== floorY) return !!this.collision
 
     if (!this.collision || floorX !== this.collision.x || floorY !== this.collision.y) {
-      const hasCollision = this.game.world.hasCollision(floorX, floorY)
-
-      if (hasCollision) {
+      if (this.game.world.hasCollision(floorX, floorY)) {
         this.collision = {
           x: floorX,
           y: floorY,
@@ -143,7 +127,7 @@ export class Player {
   }
 
   still = () => {
-    this.updatePosition(true)
+    this.updatePosition(this.speed.x ? "x" : "y")
 
     if (this.speed.x || this.speed.y || this.state === Player.STATES.STILL) return
     this.state = Player.STATES.STILL
@@ -154,10 +138,18 @@ export class Player {
     const speedX = direction === CONTROLS.RIGHT ? 1 : direction === CONTROLS.LEFT ? -1 : 0
     const speedY = direction === CONTROLS.DOWN ? 1 : direction === CONTROLS.UP ? -1 : 0
 
+    if ((this.speed.x || this.speed.y) && this.direction !== direction) {
+      this.updatePosition(this.speed.x ? "x" : "y")
+      return
+    }
+
     if (!this.hasWorldCollision(speedX, speedY)) {
-      this.speed.x = speedX
-      this.speed.y = speedY
-      this.updatePosition()
+      if (!this.speed.x && !this.speed.y) {
+        this.speed.x = speedX
+        this.speed.y = speedY
+      }
+      this.updatePosition(this.speed.x ? "x" : "y", true)
+
     }
 
     if (this.state === Player.STATES.WALK && this.direction === direction) return
