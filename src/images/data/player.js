@@ -96,9 +96,9 @@ export default {
     },
   },
   animations: {
-    walkDown: ["stillDown", "walkDown0", "stillDown", "walkDown1"],
-    walkUp: ["stillUp", "walkUp0", "stillUp", "walkUp1"],
-    walkLeft: ["stillLeft", "walkLeft"],
-    walkRight: ["stillRight", "walkRight"],
+    walkDown: ["walkDown0", "stillDown", "walkDown1", "stillDown"],
+    walkUp: ["walkUp0", "stillUp", "walkUp1", "stillUp"],
+    walkLeft: ["walkLeft", "stillLeft"],
+    walkRight: ["walkRight", "stillRight"],
   },
 }

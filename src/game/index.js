@@ -1,6 +1,7 @@
 import { Application, utils, settings, SCALE_MODES } from "pixi.js"
 import { CONTROLS } from "libraries/constants"
 import { Player } from "./Player"
+import { World } from "./World"
 
 export class Game {
   constructor(view) {
@@ -13,8 +14,9 @@ export class Game {
       height: 1080,
     })
 
-    this.player = new Player(this.app)
     this.action = null
+    this.player = new Player(this)
+    this.world = new World(this)
 
     window.addEventListener("action", this.handleAction)
 
@@ -32,6 +34,8 @@ export class Game {
           this.player.still()
         }
       }
+      
+      this.world.updatePosition(this.player.position)
     })
   }
 
