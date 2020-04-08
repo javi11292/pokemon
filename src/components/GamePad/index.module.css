@@ -17,8 +17,9 @@
   opacity: 0.75;
 }
 
-.button>* {
+.button * {
   fill: var(--color);
+  pointer-events: none;
 }
 
 .button path:last-child {

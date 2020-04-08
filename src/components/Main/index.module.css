@@ -3,6 +3,7 @@
   width: 100%;
   position: absolute;
   touch-action: none;
+  background-color: black;
 }
 
 .canvas {
