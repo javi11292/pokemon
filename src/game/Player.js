@@ -35,7 +35,9 @@ function addSpriteSheet(player) {
 
 function setTextures(player) {
   if (!player.sprite) return
-  player.sprite.textures = player.textures[player.state + upperCase(player.direction)]
+  const textures = player.textures[player.state + upperCase(player.direction)]
+  if (!textures || player.sprite.textures === textures) return
+  player.sprite.textures = textures
   player.sprite.play()
 }
 
@@ -59,6 +61,7 @@ export class Player {
     this.sprite = null
     this.state = null
     this.direction = CONTROLS.DOWN
+    this.nextDirection = null
 
     this.position = {
       x: SIZE * 10,
@@ -86,21 +89,46 @@ export class Player {
     addSpriteSheet(this)
   }
 
+  update = () => {
+    const speedX = this.direction === CONTROLS.RIGHT ? 1 : this.direction === CONTROLS.LEFT ? -1 : 0
+    const speedY = this.direction === CONTROLS.DOWN ? 1 : this.direction === CONTROLS.UP ? -1 : 0
+
+    if (this.state === Player.STATES.WALK && !this.speed.x && !this.speed.y && !this.hasWorldCollision(speedX, speedY)) {
+      this.speed.x = speedX
+      this.speed.y = speedY
+      this.updatePosition(this.speed.x ? "x" : "y", true)
+    } else if (this.speed.x || this.speed.y) {
+      this.updatePosition(this.speed.x ? "x" : "y")
+    } else {
+      this.updateDirection()
+    }
+
+    setTextures(this)
+  }
+
+  updateDirection = () => {
+    if (this.nextDirection) {
+      this.direction = this.nextDirection
+      this.nextDirection = null
+    }
+  }
+
   updatePosition = (dimension, move) => {
     if (!this.speed[dimension]) return
 
     const speed = this.speed[dimension] * SPEED
-    const module = Math.abs(this.position[dimension] % SIZE)
+    const remainder = Math.abs(this.position[dimension] % SIZE)
 
-    const offset = module && (this.speed[dimension] === 1 ? module : SIZE - module)
+    const offset = remainder && (this.speed[dimension] === 1 ? remainder : SIZE - remainder)
 
-    if (module) {
+    if (remainder) {
       const normalizedOffset = this.position[dimension] <= 0 ? offset : SIZE - offset
       this.position[dimension] += normalizedOffset >= SPEED ? speed : normalizedOffset * this.speed[dimension]
     } else if (move) {
       this.position[dimension] += speed
     } else {
       this.speed[dimension] = 0
+      this.updateDirection()
     }
   }
 
@@ -127,34 +155,24 @@ export class Player {
   }
 
   still = () => {
-    this.updatePosition(this.speed.x ? "x" : "y")
-
-    if (this.speed.x || this.speed.y || this.state === Player.STATES.STILL) return
     this.state = Player.STATES.STILL
-    setTextures(this)
+  }
+
+  face = (direction) => {
+    setTimeout(() => {
+      this.direction = direction
+      if (this.game.action === direction) this.walk(direction)
+      else this.still()
+    }, 100)
   }
 
   walk = direction => {
-    const speedX = direction === CONTROLS.RIGHT ? 1 : direction === CONTROLS.LEFT ? -1 : 0
-    const speedY = direction === CONTROLS.DOWN ? 1 : direction === CONTROLS.UP ? -1 : 0
-
-    if ((this.speed.x || this.speed.y) && this.direction !== direction) {
-      this.updatePosition(this.speed.x ? "x" : "y")
+    if (this.direction !== direction && this.state !== Player.STATES.WALK) {
+      this.face(direction)
       return
     }
 
-    if (!this.hasWorldCollision(speedX, speedY)) {
-      if (!this.speed.x && !this.speed.y) {
-        this.speed.x = speedX
-        this.speed.y = speedY
-      }
-      this.updatePosition(this.speed.x ? "x" : "y", true)
-
-    }
-
-    if (this.state === Player.STATES.WALK && this.direction === direction) return
+    this.nextDirection = direction
     this.state = Player.STATES.WALK
-    this.direction = direction
-    setTextures(this)
   }
 }

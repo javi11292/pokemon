@@ -21,25 +21,26 @@ export class Game {
     window.addEventListener("action", this.handleAction)
 
     this.app.ticker.add(() => {
-      switch (this.action) {
-        case CONTROLS.UP:
-        case CONTROLS.LEFT:
-        case CONTROLS.RIGHT:
-        case CONTROLS.DOWN: {
-          this.player.walk(this.action)
-          break
-        }
-
-        default: {
-          this.player.still()
-        }
-      }
-      
-      this.world.updatePosition(this.player.position)
+      this.player.update()
+      this.world.update()
     })
   }
 
   handleAction = ({ detail }) => {
     this.action = detail
+
+    switch (this.action) {
+      case CONTROLS.UP:
+      case CONTROLS.LEFT:
+      case CONTROLS.RIGHT:
+      case CONTROLS.DOWN: {
+        this.player.walk(this.action)
+        break
+      }
+
+      default: {
+        this.player.still()
+      }
+    }
   }
 }

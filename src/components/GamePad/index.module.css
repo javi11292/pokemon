@@ -9,8 +9,8 @@
 
 .container {
   grid-area: var(--area);
-  width: 4rem;
-  height: 4rem;
+  width: 4.5rem;
+  height: 4.5rem;
   display: grid;
   grid-template-rows: 1fr auto;
   transform: rotate(var(--rotate));

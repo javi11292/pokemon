@@ -56,7 +56,8 @@ export class World {
     game.app.stage.addChildAt(this.camera, 0)
   }
 
-  updatePosition = position => {
+  update = () => {
+    const position = this.game.player.position
     this.camera.pivot.x = -this.game.player.sprite?.x
     this.camera.pivot.y = -this.game.player.sprite?.y
     this.camera.position.x = -position.x
@@ -69,6 +70,7 @@ export class World {
   }
 
   hasCollision = (x, y) => {
+    if (!this.camera.children.length) return
     const tile = this.camera.getChildAt(0).getChildByName(`${y}-${x}`)
     return !tile || tile.collision
   }
