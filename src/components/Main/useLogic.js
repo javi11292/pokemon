@@ -10,7 +10,7 @@ function useLogic() {
   useEffect(() => {
     if (navigator.userAgent === "ReactSnap") return
 
-    import("game").then(({ Game }) => new Game(canvas.current))
+    import("game").then(({ createGame }) => createGame(canvas.current))
 
     window.addEventListener("contextmenu", preventDefault)
 
