@@ -1,98 +1,98 @@
 import { groupD8 } from "pixi.js"
 
-const WIDTH = 16
-const HEIGHT = 16
+const SIZE = 16
+const ROTATE = "rotate"
 
 export default {
   meta: {},
   frames: {
     stillDown: {
       frame: {
-        x: WIDTH * 6,
-        y: HEIGHT * 14,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 6,
+        y: SIZE * 14,
+        w: SIZE,
+        h: SIZE,
       },
     },
     walkDown0: {
       frame: {
-        x: WIDTH * 1,
-        y: HEIGHT * 15,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 1,
+        y: SIZE * 15,
+        w: SIZE,
+        h: SIZE,
       },
     },
     walkDown1: {
       frame: {
-        x: WIDTH * 1,
-        y: HEIGHT * 15,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 1,
+        y: SIZE * 15,
+        w: SIZE,
+        h: SIZE,
       },
-      rotate: groupD8.MIRROR_HORIZONTAL,
+      [ROTATE]: groupD8.MIRROR_HORIZONTAL,
     },
 
     stillUp: {
       frame: {
-        x: WIDTH * 7,
-        y: HEIGHT * 14,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 7,
+        y: SIZE * 14,
+        w: SIZE,
+        h: SIZE,
       },
     },
     walkUp0: {
       frame: {
-        x: WIDTH * 2,
-        y: HEIGHT * 15,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 2,
+        y: SIZE * 15,
+        w: SIZE,
+        h: SIZE,
       },
     },
     walkUp1: {
       frame: {
-        x: WIDTH * 2,
-        y: HEIGHT * 15,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 2,
+        y: SIZE * 15,
+        w: SIZE,
+        h: SIZE,
       },
-      rotate: groupD8.MIRROR_HORIZONTAL,
+      [ROTATE]: groupD8.MIRROR_HORIZONTAL,
     },
 
 
     stillLeft: {
       frame: {
-        x: WIDTH * 0,
-        y: HEIGHT * 15,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 0,
+        y: SIZE * 15,
+        w: SIZE,
+        h: SIZE,
       },
     },
     walkLeft: {
       frame: {
-        x: WIDTH * 3,
-        y: HEIGHT * 15,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 3,
+        y: SIZE * 15,
+        w: SIZE,
+        h: SIZE,
       },
     },
 
     stillRight: {
       frame: {
-        x: WIDTH * 0,
-        y: HEIGHT * 15,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 0,
+        y: SIZE * 15,
+        w: SIZE,
+        h: SIZE,
       },
-      rotate: groupD8.MIRROR_HORIZONTAL,
+      [ROTATE]: groupD8.MIRROR_HORIZONTAL,
     },
     walkRight: {
       frame: {
-        x: WIDTH * 3,
-        y: HEIGHT * 15,
-        w: WIDTH,
-        h: HEIGHT,
+        x: SIZE * 3,
+        y: SIZE * 15,
+        w: SIZE,
+        h: SIZE,
       },
-      rotate: groupD8.MIRROR_HORIZONTAL,
+      [ROTATE]: groupD8.MIRROR_HORIZONTAL,
     },
   },
   animations: {

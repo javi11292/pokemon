@@ -48,9 +48,11 @@ export function createWorld(game) {
         graphics.beginTextureFill({ texture: world.texture })
         graphics.drawRect(frame.x, frame.y, frame.w, frame.h)
 
-        graphics.width = SIZE
+
+        graphics.width = frame.rotate ? -SIZE : SIZE
         graphics.height = SIZE
-        graphics.x = -frame.x * graphics.scale.x + j * SIZE
+
+        graphics.x = -frame.x * graphics.scale.x + j * SIZE - (frame.rotate ? graphics.width : 0)
         graphics.y = -frame.y * graphics.scale.y + i * SIZE
 
         locationMap.addChild(graphics)
