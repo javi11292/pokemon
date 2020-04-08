@@ -1,1 +1,0 @@
-(this.webpackJsonpclient=this.webpackJsonpclient||[]).push([[5],{130:function(t,c,e){t.exports=e.p+"static/media/PalletTown.ac79b8b1.txt"}}]);
