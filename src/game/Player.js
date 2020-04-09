@@ -27,9 +27,9 @@ export function createPlayer(game) {
     state: null,
     direction: CONTROLS.DOWN,
     nextDirection: null,
-    position: { x: SIZE * 10, y: SIZE * 3 },
+    position: { x: SIZE * 3, y: SIZE * 7 },
     speed: { x: 0, y: 0 },
-    collision: null,
+    nextTile: { data: {} },
     textures: {
       stillDown: [],
       stillUp: [],
@@ -95,37 +95,34 @@ export function createPlayer(game) {
     } else {
       player.speed[dimension] = 0
       updateDirection()
+      const { data } = player.nextTile
+      if (data.location || data.layer) {
+        const [x, y] = data.position.split(",")
+        player.game.world.setLocation(data.location, data.layer, { x: x * SIZE, y: y * SIZE + SIZE })
+      }
     }
   }
 
-  function hasWorldCollision(speedX, speedY) {
+  function setNextTileData(speedX, speedY) {
     const nextX = Math.floor(player.position.x / SIZE + speedX)
     const nextY = Math.floor(player.position.y / SIZE + speedY)
-    const remainderX = player.position.x % SIZE
-    const remainderY = player.position.y % SIZE
 
-    if (remainderX || remainderY) return !!player.collision
+    if (player.nextTile.x === nextX && player.nextTile.y === nextY) return
 
-    if (!player.collision || nextX !== player.collision.x || nextY !== player.collision.y) {
-      const tile = player.game.world.tileAt(nextX, nextY)
-      if (!tile || tile.collision) {
-        player.collision = {
-          x: nextX,
-          y: nextY,
-        }
-      } else {
-        player.collision = null
-      }
+    player.nextTile = {
+      x: nextX,
+      y: nextY,
+      data: player.game.world.tileAt(nextX, nextY),
     }
-
-    return !!player.collision
   }
 
   function update() {
     const speedX = player.direction === CONTROLS.RIGHT ? 1 : player.direction === CONTROLS.LEFT ? -1 : 0
     const speedY = player.direction === CONTROLS.DOWN ? 1 : player.direction === CONTROLS.UP ? -1 : 0
 
-    if (player.state === STATES.WALK && !player.speed.x && !player.speed.y && !hasWorldCollision(speedX, speedY)) {
+    if (player.state === STATES.WALK && !player.speed.x && !player.speed.y) setNextTileData(speedX, speedY)
+
+    if (player.state === STATES.WALK && !player.speed.x && !player.speed.y && player.nextTile.data.collision === "false") {
       player.speed.x = speedX
       player.speed.y = speedY
       updatePosition(player.speed.x ? "x" : "y", true)

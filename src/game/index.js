@@ -12,6 +12,7 @@ export function createGame(view) {
     action: null,
     player: null,
     world: null,
+    enableControls: false,
   }
 
   game.app = new Application({
@@ -24,6 +25,7 @@ export function createGame(view) {
   game.world = createWorld(game)
 
   function handleAction({ detail }) {
+    if (!game.enableControls) return
     game.action = detail
 
     switch (game.action) {

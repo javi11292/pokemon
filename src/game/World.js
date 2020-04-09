@@ -1,17 +1,52 @@
 import { Graphics, Loader, Container } from "pixi.js"
-import data from "images/data/world"
-import texture from "images/world.png"
+import worldTexture from "images/world.png"
+import worldData from "images/data/world.xml"
 import { SIZE } from "libraries/constants"
+import { parseData, parseMap } from "libraries/util"
+
+function loadTexture() {
+  return new Promise(resolve => {
+    new Loader().add("world", worldTexture).load((loader, resources) => {
+      resolve(resources.world.texture)
+    })
+  })
+}
+
+function addGraphic({ texture, map, tileX, tileY, x, y, object, tileSize }) {
+  const graphics = new Graphics()
+  graphics.name = `${x}-${y}`
+  graphics.data = object
+
+  graphics.beginTextureFill({ texture })
+  graphics.drawRect(tileX, tileY, tileSize, tileSize)
+
+  graphics.width = SIZE
+  graphics.height = SIZE
+
+  graphics.x = -tileX * graphics.scale.x + x * SIZE
+  graphics.y = -tileY * graphics.scale.y + y * SIZE
+
+  map.addChild(graphics)
+}
 
 export function createWorld(game) {
   const world = {
     game,
     update,
     tileAt,
-    location: null,
+    setLocation,
+    location: "PalletTownRooms",
+    layer: "house1 f2",
     texture: null,
+    data: null,
     map: {},
     camera: new Container(),
+  }
+
+  function setLocation(location, layer, position) {
+    world.location = location || world.location
+    world.layer = layer
+    loadMapLocation(position)
   }
 
   function update() {
@@ -22,55 +57,76 @@ export function createWorld(game) {
     world.camera.position.y = -position.y
   }
 
-  function loadTexture() {
-    new Loader().add("world", texture).load((loader, resources) => {
-      world.texture = resources.world.texture
-      loadMapLocation("PalletTown")
-    })
+  async function load() {
+    const [texture, data] = await Promise.all([loadTexture(), parseData(worldData)])
+    world.texture = texture
+    world.data = data
+    await loadMapLocation()
+    world.game.enableControls = true
   }
 
-  async function loadMapLocation(location) {
-    let locationMap = world.map[location]
+  async function loadMapLocation(position) {
+    const { location } = world
+    const layer = world.layer || "index"
+    let locationMap = world.map[location + layer]
 
     if (!locationMap) {
-      const { default: url } = await import(`map/${location}.txt`)
-      const map = await fetch(url).then(response => response.text())
-
       locationMap = new Container()
+      const { default: url } = await import(`maps/${location}.xml`)
+      const layers = await parseMap(url)
+      const { tileSize, columns } = world.data
+      const { value: map, objects } = layers[layer]
 
-      map.split("\n").forEach((row, i) => row.split(" ").forEach((value, j) => {
-        const frame = data[value]
-        if (!frame) return
-        const graphics = new Graphics()
-        graphics.name = `${j}-${i}`
-        graphics.collision = frame.collision
+      map.split("\n").forEach((row, i) => row.split(",").forEach((value, j) => {
+        if (!value || value === "0") return
+        const id = parseInt(value, 10) - 1
+        const object = world.data[id] || {}
+        const tileX = (id % columns) * tileSize
+        const tileY = Math.floor(id / columns) * tileSize
 
-        graphics.beginTextureFill({ texture: world.texture })
-        graphics.drawRect(frame.x, frame.y, frame.w, frame.h)
-
-
-        graphics.width = frame.rotate ? -SIZE : SIZE
-        graphics.height = SIZE
-
-        graphics.x = -frame.x * graphics.scale.x + j * SIZE - (frame.rotate ? graphics.width : 0)
-        graphics.y = -frame.y * graphics.scale.y + i * SIZE
-
-        locationMap.addChild(graphics)
+        addGraphic({
+          texture: world.texture,
+          map: locationMap,
+          tileX,
+          tileY,
+          x: j,
+          y: i,
+          tileSize,
+          object,
+        })
       }))
 
-      world.map[location] = locationMap
+      objects.forEach(object => {
+        const id = parseInt(object.id, 10) - 1
+        const tileX = (id % columns) * tileSize
+        const tileY = Math.floor(id / columns) * tileSize
+
+        addGraphic({
+          texture: world.texture,
+          map: locationMap,
+          tileX,
+          tileY,
+          x: object.x / tileSize,
+          y: object.y / tileSize,
+          tileSize,
+          object: { ...(world.data[id] || {}), ...object },
+        })
+      })
+
+      world.map[location + layer] = locationMap
     }
 
     world.camera.removeChildren()
     world.camera.addChild(locationMap)
+    if (position) world.game.player.position = position
   }
 
   function tileAt(x, y) {
-    if (!world.camera.children.length) return
-    return world.camera.getChildAt(0).getChildByName(`${x}-${y}`)
+    if (!world.camera.children.length) return {}
+    return world.camera.getChildAt(0).getChildByName(`${x}-${y}`)?.data || {}
   }
 
-  loadTexture()
+  load()
   game.app.stage.addChildAt(world.camera, 0)
 
   return world

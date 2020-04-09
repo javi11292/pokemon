@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="11">
+ <tileset firstgid="1" source="../images/data/world.xml"/>
+ <layer id="5" name="house1 f2" width="8" height="8" visible="0">
+  <data encoding="csv">
+930,931,932,609,609,658,609,658,
+968,969,970,647,647,647,647,0,
+647,647,647,647,647,647,647,647,
+647,647,647,647,647,647,647,647,
+647,647,647,770,647,647,647,647,
+647,647,647,808,647,647,647,647,
+924,647,647,647,647,647,865,647,
+962,647,647,647,647,647,903,647
+</data>
+ </layer>
+ <objectgroup id="6" name="house1 f2" visible="0">
+  <object id="4" gid="805" x="112" y="32" width="16" height="16">
+   <properties>
+    <property name="layer" value="house1 f1"/>
+    <property name="position" value="7,1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <layer id="3" name="house1 f1" width="8" height="8" visible="0">
+  <data encoding="csv">
+928,928,609,658,609,658,609,658,
+966,966,647,770,647,647,647,0,
+647,647,647,647,647,647,647,647,
+647,647,647,647,647,647,647,647,
+647,647,657,1007,1008,657,647,647,
+647,647,657,1045,1046,657,647,647,
+647,647,647,647,647,647,647,647,
+647,647,0,0,647,647,647,647
+</data>
+ </layer>
+ <objectgroup id="4" name="house1 f1" visible="0">
+  <object id="1" gid="843" x="112" y="32" width="16" height="16">
+   <properties>
+    <property name="layer" value="house1 f2"/>
+    <property name="position" value="7,1"/>
+   </properties>
+  </object>
+  <object id="5" gid="691" x="48" y="128" width="16" height="16">
+   <properties>
+    <property name="location" value="PalletTown"/>
+    <property name="position" value="5,6"/>
+   </properties>
+  </object>
+  <object id="9" gid="691" x="32" y="128" width="16" height="16">
+   <properties>
+    <property name="location" value="PalletTown"/>
+    <property name="position" value="5,6"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <layer id="10" name="house2" width="8" height="8" visible="0">
+  <data encoding="csv">
+929,929,609,1002,609,659,609,928,
+967,967,647,647,647,647,647,966,
+647,647,647,647,647,647,647,647,
+647,647,657,1005,1006,657,647,647,
+647,647,657,1045,1046,657,647,647,
+647,647,647,647,647,647,647,647,
+865,647,647,647,647,647,647,865,
+903,647,0,0,647,647,647,903
+</data>
+ </layer>
+ <objectgroup id="9" name="house2">
+  <object id="8" gid="691" x="48" y="128" width="16" height="16">
+   <properties>
+    <property name="location" value="PalletTown"/>
+    <property name="position" value="13,6"/>
+   </properties>
+  </object>
+  <object id="10" gid="691" x="32" y="128" width="16" height="16">
+   <properties>
+    <property name="location" value="PalletTown"/>
+    <property name="position" value="13,6"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
