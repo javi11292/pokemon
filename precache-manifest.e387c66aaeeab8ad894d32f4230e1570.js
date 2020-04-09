@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "a6283749f6051856ca0df4297eb12061",
+    "revision": "8e7ab2fb2f2a065a01f6b864c68c0231",
     "url": "/pokemon/index.html"
   },
   {
@@ -24,47 +24,47 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/pokemon/static/js/3.bba88650.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "b556fd13f0676c8ab35a",
-    "url": "/pokemon/static/js/4.6dbc6953.chunk.js"
+    "revision": "d98ef5cb493817b4df83",
+    "url": "/pokemon/static/js/4.991e81a8.chunk.js"
   },
   {
-    "revision": "2cf7c7d416312514c546",
-    "url": "/pokemon/static/js/5.86a639cc.chunk.js"
+    "revision": "2423c0d01ba15050ace4",
+    "url": "/pokemon/static/js/5.f77e6f5d.chunk.js"
   },
   {
-    "revision": "2d6fa63d425cc86a981a",
-    "url": "/pokemon/static/js/6.99a4438b.chunk.js"
+    "revision": "9f5f4ad460ced8e3f04d",
+    "url": "/pokemon/static/js/6.c18eabbb.chunk.js"
   },
   {
     "revision": "32e18ccd2569989fe5b9",
     "url": "/pokemon/static/js/main.c847e66e.chunk.js"
   },
   {
-    "revision": "d91807812f0f83f2413f",
-    "url": "/pokemon/static/js/runtime-main.3f21b4a8.js"
+    "revision": "9ac9b894baaee7bd3393",
+    "url": "/pokemon/static/js/runtime-main.ba1003bd.js"
   },
   {
     "revision": "41174af9d4175757d8771477bfe0c7d0",
     "url": "/pokemon/static/media/PadButton.41174af9.svg"
   },
   {
-    "revision": "569031b683dde13cd69a6a0334632523",
-    "url": "/pokemon/static/media/PalletTown.569031b6.xml"
+    "revision": "00e8775504d72e8257f69417571875ff",
+    "url": "/pokemon/static/media/PalletTown.00e87755.xml"
   },
   {
-    "revision": "f6d861a96f7c7af7d7241f0f43c3c24a",
-    "url": "/pokemon/static/media/PalletTownRooms.f6d861a9.xml"
+    "revision": "e36c5cdea0ba4eee4cdf6e2c39fbc13e",
+    "url": "/pokemon/static/media/PalletTownRooms.e36c5cde.xml"
   },
   {
     "revision": "111f6faf4f740f695066bf22aea2fa3f",
     "url": "/pokemon/static/media/characters.111f6faf.png"
   },
   {
-    "revision": "602efee115a96fc024f0af62c21d57c6",
-    "url": "/pokemon/static/media/world.602efee1.xml"
-  },
-  {
     "revision": "74af39e91ebbd7fe0bdeb9961cb82380",
     "url": "/pokemon/static/media/world.74af39e9.png"
+  },
+  {
+    "revision": "db6fb586d2430d28f1602b1bf091a326",
+    "url": "/pokemon/static/media/world.db6fb586.xml"
   }
 ]);
