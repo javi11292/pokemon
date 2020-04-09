@@ -27,6 +27,7 @@ export function createPlayer(game) {
     state: null,
     direction: CONTROLS.DOWN,
     nextDirection: null,
+    nextState: null,
     position: { x: SIZE * 3, y: SIZE * 7 },
     speed: { x: 0, y: 0 },
     nextTile: { data: {} },
@@ -43,7 +44,7 @@ export function createPlayer(game) {
   }
 
   function still() {
-    player.state = STATES.STILL
+    player.nextState = STATES.STILL
   }
 
   function face(direction) {
@@ -72,10 +73,14 @@ export function createPlayer(game) {
     player.sprite.play()
   }
 
-  function updateDirection() {
+  function updateState() {
     if (player.nextDirection) {
       player.direction = player.nextDirection
       player.nextDirection = null
+    }
+    if(player.nextState){
+      player.state = player.nextState
+      player.nextState = null
     }
   }
 
@@ -94,7 +99,7 @@ export function createPlayer(game) {
       player.position[dimension] += speed
     } else {
       player.speed[dimension] = 0
-      updateDirection()
+      updateState()
       const { data } = player.nextTile
       if (data.location || data.layer) {
         const [x, y] = data.position.split(",")
@@ -129,7 +134,7 @@ export function createPlayer(game) {
     } else if (player.speed.x || player.speed.y) {
       updatePosition(player.speed.x ? "x" : "y")
     } else {
-      updateDirection()
+      updateState()
     }
 
     setTextures()
