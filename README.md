@@ -1,5 +1,5 @@
 Tile custom properties
-  layer: string  -  name of the layer to load
-  location: string  -  name of the tmx file to load
-  position: string  -  x,y starting player position
-  collision: boolean  -  false to disable collision
+  layer: name of the layer to load
+  location: name of the tmx file to load
+  position: x,y starting player position
+  collision: false to disable collision

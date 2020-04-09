@@ -3,52 +3,62 @@
  <image source="../world.png" width="608" height="656"/>
  <tile id="0">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
  <tile id="2">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
  <tile id="38">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
  <tile id="40">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
  <tile id="231">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
  <tile id="646">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
  <tile id="656">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
  <tile id="690">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
  <tile id="804">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
  <tile id="842">
   <properties>
-   <property name="collision" type="bool" value="false"/>
+   <property name="collision" value="false"/>
+  </properties>
+ </tile>
+ <tile id="1064">
+  <properties>
+   <property name="collision" value="false"/>
+  </properties>
+ </tile>
+ <tile id="1102">
+  <properties>
+   <property name="collision" value="false"/>
   </properties>
  </tile>
 </tileset>

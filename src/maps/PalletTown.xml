@@ -40,7 +40,9 @@
   </object>
   <object id="23" gid="232" x="192" y="192" width="16" height="16">
    <properties>
-    <property name="location" value="house3"/>
+    <property name="layer" value="laboratory"/>
+    <property name="location" value="PalletTownRooms"/>
+    <property name="position" value="4,10"/>
    </properties>
   </object>
  </objectgroup>
