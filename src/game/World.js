@@ -146,5 +146,7 @@ export function createWorld(game) {
 
   game.app.stage.addChildAt(world.camera, 0)
 
+  game.app.ticker.add(update)
+
   return world
 }

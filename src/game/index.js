@@ -5,6 +5,22 @@ import { loadText } from "libraries/util"
 import { createPlayer } from "./Player"
 import { createWorld } from "./World"
 
+function prepareGame(game, view) {
+  utils.skipHello()
+  settings.SCALE_MODE = SCALE_MODES.NEAREST
+
+  game.app = new Application({
+    view,
+    width: 1920,
+    height: 1080,
+  })
+
+  game.app.renderer.plugins.accessibility.destroy()
+  delete game.app.renderer.plugins.accesibility
+
+  game.player = createPlayer(game)
+  game.world = createWorld(game)
+}
 
 export async function createGame({ view, setMessage }) {
   const game = {
@@ -22,20 +38,7 @@ export async function createGame({ view, setMessage }) {
     layer: await playerDB.getItem("layer"),
   }
 
-  utils.skipHello()
-  settings.SCALE_MODE = SCALE_MODES.NEAREST
-
-  game.app = new Application({
-    view,
-    width: 1920,
-    height: 1080,
-  })
-
-  game.app.renderer.plugins.accessibility.destroy()
-  delete game.app.renderer.plugins.accesibility
-
-  game.player = createPlayer(game)
-  game.world = createWorld(game)
+  prepareGame(game, view)
 
   if (!save.position) {
     loadText("welcome", setMessage)
@@ -70,9 +73,4 @@ export async function createGame({ view, setMessage }) {
   }
 
   window.addEventListener("action", handleAction)
-
-  game.app.ticker.add(() => {
-    game.player.update()
-    game.world.update()
-  })
 }
