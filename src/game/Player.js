@@ -16,7 +16,7 @@ export function createPlayer(game) {
 
   function face(direction) {
     characterFace(direction)
-    faceTimeout = setTimeout(() => walk(direction), 30)
+    faceTimeout = setTimeout(() => walk(direction), 50)
   }
 
   function walk(direction) {
