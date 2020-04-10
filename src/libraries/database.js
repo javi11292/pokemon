@@ -1,3 +1,3 @@
 import localForage from "localforage"
 
-export const playerDB = localForage.createInstance({ storeName: "player" })
+export const playerDB = localForage.createInstance({ name: "player" })

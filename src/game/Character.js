@@ -63,7 +63,6 @@ export function createCharacter(game, id) {
     set position(newPosition) {
       position.x = newPosition.x
       position.y = newPosition.y
-      database.setItem("position", newPosition)
     },
     textures: {
       stillDown: [],
