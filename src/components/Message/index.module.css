@@ -1,0 +1,52 @@
+@keyframes flash {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.root {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+}
+
+.box {
+  line-height: 1.5rem;
+  border: 1px solid;
+  padding: 0.5rem;
+  padding-right: 2rem;
+  font-size: 1.25rem;
+  position: relative;
+}
+
+.message {
+  overflow: hidden;
+  height: 4.5rem;
+  position: relative;
+}
+
+.scroller {
+  position: relative;
+  height: 100%;
+  transition: top 1s;
+  top: var(--scroll);
+}
+
+.icon {
+  font-size: 1.5rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  animation: flash 1s linear infinite;
+}

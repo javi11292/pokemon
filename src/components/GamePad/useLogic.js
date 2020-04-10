@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
+import useStore from "hooks/useStore"
 
 function useLogic() {
   const [buttonPress, setButtonPress] = useState()
+  const [message] = useStore("message")
 
   useEffect(() => {
     function handlePress(event) {
@@ -29,7 +31,7 @@ function useLogic() {
     window.dispatchEvent(new CustomEvent("action", { detail: button }))
   }
 
-  return { buttonPress }
+  return { buttonPress, message }
 }
 
 export default useLogic

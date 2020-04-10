@@ -16,4 +16,8 @@ export default getStore({
       }
     },
   },
+  message: {
+    state: "",
+    reducer: (state, value) => value
+  }
 })

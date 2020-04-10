@@ -12,3 +12,8 @@
   display: block;
   object-fit: contain;
 }
+
+.title {
+  position: absolute;
+  visibility: hidden;
+}

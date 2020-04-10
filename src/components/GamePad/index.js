@@ -5,9 +5,9 @@ import styles from "./index.module.css"
 import { ReactComponent as PadButton } from "./PadButton.svg"
 
 function GamePad() {
-  const { buttonPress } = useLogic()
+  const { buttonPress, message } = useLogic()
 
-  return (
+  return !message && (
     <div className={styles.root}>
 
       <div

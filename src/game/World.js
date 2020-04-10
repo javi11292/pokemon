@@ -3,6 +3,7 @@ import worldTexture from "images/world.png"
 import worldData from "images/data/world.xml"
 import { SIZE } from "libraries/constants"
 import { parseData, parseMap } from "libraries/util"
+import { playerDB } from "libraries/database"
 
 function loadTexture() {
   return new Promise(resolve => {
@@ -30,13 +31,29 @@ function addGraphic({ texture, map, tileX, tileY, x, y, object, tileSize }) {
 }
 
 export function createWorld(game) {
+  let location = null
+  let layer = null
+
   const world = {
     game,
     update,
     tileAt,
     setLocation,
-    location: "PalletTownRooms",
-    layer: "house1 f2",
+    load,
+    get location() {
+      return location
+    },
+    set location(newLocation) {
+      location = newLocation
+      playerDB.setItem("location", newLocation)
+    },
+    get layer() {
+      return layer
+    },
+    set layer(newLayer) {
+      layer = newLayer
+      playerDB.setItem("layer", newLayer)
+    },
     texture: null,
     data: null,
     map: {},
@@ -45,7 +62,9 @@ export function createWorld(game) {
 
   function setLocation(location, layer, position) {
     world.location = location || world.location
-    world.layer = layer
+    world.layer = layer || "index"
+    playerDB.setItem("location", world.location)
+    playerDB.setItem("layer", world.layer)
     loadMapLocation(position)
   }
 
@@ -66,8 +85,7 @@ export function createWorld(game) {
   }
 
   async function loadMapLocation(position) {
-    const { location } = world
-    const layer = world.layer || "index"
+    const { location, layer } = world
     let locationMap = world.map[location + layer]
 
     if (!locationMap) {
@@ -126,7 +144,6 @@ export function createWorld(game) {
     return world.camera.getChildAt(0).getChildByName(`${x}-${y}`)?.data || {}
   }
 
-  load()
   game.app.stage.addChildAt(world.camera, 0)
 
   return world

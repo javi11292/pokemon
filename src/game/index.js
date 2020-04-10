@@ -1,13 +1,13 @@
 import { Application, utils, settings, SCALE_MODES } from "pixi.js"
-import { CONTROLS } from "libraries/constants"
+import { CONTROLS, SIZE } from "libraries/constants"
+import { playerDB } from "libraries/database"
 import { createPlayer } from "./Player"
 import { createWorld } from "./World"
 
-export function createGame(view) {
-  utils.skipHello()
-  settings.SCALE_MODE = SCALE_MODES.NEAREST
 
+export async function createGame({ view, setMessage }) {
   const game = {
+    setMessage,
     app: null,
     action: null,
     player: null,
@@ -15,14 +15,38 @@ export function createGame(view) {
     enableControls: false,
   }
 
+  const save = {
+    position: await playerDB.getItem("position"),
+    location: await playerDB.getItem("location"),
+    layer: await playerDB.getItem("layer"),
+  }
+
+  utils.skipHello()
+  settings.SCALE_MODE = SCALE_MODES.NEAREST
+
   game.app = new Application({
     view,
     width: 1920,
     height: 1080,
   })
 
+  game.app.renderer.plugins.accessibility.destroy()
+  delete game.app.renderer.plugins.accesibility
+
   game.player = createPlayer(game)
   game.world = createWorld(game)
+
+  if (!save.position) {
+    game.player.position = { x: SIZE * 3, y: SIZE * 7 }
+    game.world.location = "PalletTownRooms"
+    game.world.layer = "house1 f2"
+  } else {
+    game.player.position = save.position
+    game.world.location = save.location
+    game.world.layer = save.layer
+  }
+
+  game.world.load()
 
   function handleAction({ detail }) {
     if (!game.enableControls) return

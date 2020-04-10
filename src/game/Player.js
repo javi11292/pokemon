@@ -3,6 +3,7 @@ import data from "images/data/player"
 import texture from "images/characters.png"
 import { upperCase } from "libraries/util"
 import { CONTROLS, SIZE, SPEED } from "libraries/constants"
+import { playerDB } from "libraries/database"
 
 const STATES = {
   STILL: "still",
@@ -17,7 +18,32 @@ function getTextures(spriteSheet, key) {
   })
 }
 
+function createPosition() {
+  let x = 0
+  let y = 0
+  const position = {
+    get x() {
+      return x
+    },
+    set x(newX) {
+      x = newX
+      playerDB.setItem("position", { ...position, x })
+    },
+    get y() {
+      return y
+    },
+    set y(newY) {
+      y = newY
+      playerDB.setItem("position", { ...position, y })
+    }
+  }
+
+  return position
+}
+
 export function createPlayer(game) {
+  const position = createPosition()
+
   const player = {
     game,
     update,
@@ -28,7 +54,14 @@ export function createPlayer(game) {
     direction: CONTROLS.DOWN,
     nextDirection: null,
     nextState: null,
-    position: { x: SIZE * 3, y: SIZE * 7 },
+    get position() {
+      return position
+    },
+    set position(newPosition) {
+      position.x = newPosition.x
+      position.y = newPosition.y
+      playerDB.setItem("position", newPosition)
+    },
     speed: { x: 0, y: 0 },
     nextTile: { data: {} },
     textures: {
@@ -52,7 +85,7 @@ export function createPlayer(game) {
       player.direction = direction
       if (direction === player.game.action) walk(direction)
       else still()
-    }, 100)
+    }, 75)
   }
 
   function walk(direction) {
@@ -78,7 +111,7 @@ export function createPlayer(game) {
       player.direction = player.nextDirection
       player.nextDirection = null
     }
-    if(player.nextState){
+    if (player.nextState) {
       player.state = player.nextState
       player.nextState = null
     }
