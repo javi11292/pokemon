@@ -8,7 +8,7 @@ function useLogic() {
   useEffect(() => {
     function handlePress(event) {
       const target = document.elementFromPoint(event.x, event.y)
-      const action = target?.dataset.action
+      const action = target?.parentElement.dataset.action
       if (!action) {
         handleRelease()
       } else {

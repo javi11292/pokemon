@@ -4,7 +4,7 @@
   left: 2rem;
   transform: translateY(-100%);
   display: grid;
-  grid-template-areas: ". top ." "left . right" ". bottom .";
+  grid-template-areas: "topLeft top topRight" "left . right" "bottomLeft bottom bottomRight";
 }
 
 .container {
@@ -18,12 +18,36 @@
 }
 
 .button * {
-  fill: var(--color);
   pointer-events: none;
 }
 
-.button path:last-child {
-  fill: transparent;
+.button :first-child {
+  fill: var(--color);
   stroke: black;
   stroke-width: 2px;
+}
+
+.button :last-child {
+  pointer-events: auto;
+  fill: transparent;
+}
+
+.corner {
+  grid-area: var(--area);
+  display: grid;
+  grid-template-areas: "triangle";
+}
+
+.triangle {
+  grid-area: triangle;
+  transform: rotate(var(--rotate));
+  pointer-events: none;
+}
+
+.triangle * {
+  fill: transparent;
+}
+
+.triangle :last-child {
+  pointer-events: auto;
 }
