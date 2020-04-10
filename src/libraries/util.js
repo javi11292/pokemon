@@ -1,5 +1,14 @@
 const parser = new DOMParser()
 
+export async function loadText(id, callback) {
+  try {
+    const { default: url } = await import(`scripts/${id}.txt`)
+    const text = await fetch(url).then(response => response.text())
+    if (callback) callback(text)
+    return text
+  } catch { }
+}
+
 export async function parseData(url) {
   try {
     const text = await fetch(url).then(response => response.text())

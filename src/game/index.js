@@ -1,6 +1,7 @@
 import { Application, utils, settings, SCALE_MODES } from "pixi.js"
 import { CONTROLS, SIZE } from "libraries/constants"
 import { playerDB } from "libraries/database"
+import { loadText } from "libraries/util"
 import { createPlayer } from "./Player"
 import { createWorld } from "./World"
 
@@ -37,6 +38,7 @@ export async function createGame({ view, setMessage }) {
   game.world = createWorld(game)
 
   if (!save.position) {
+    loadText("welcome", setMessage)
     game.player.position = { x: SIZE * 3, y: SIZE * 7 }
     game.world.location = "PalletTownRooms"
     game.world.layer = "house1 f2"
