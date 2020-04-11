@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="20" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="32">
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="20" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="33">
  <tileset firstgid="1" source="../images/data/world.xml"/>
+ <tileset firstgid="1559" source="../images/data/characters.xml"/>
  <layer id="1" name="index" width="20" height="18">
   <data encoding="csv">
 39,39,39,7,39,39,39,39,39,7,41,41,7,39,39,39,39,39,7,39,
@@ -47,12 +48,17 @@
   </object>
   <object id="30" gid="41" x="160" y="32" width="16" height="16">
    <properties>
-    <property name="event" value="player"/>
+    <property name="event" value="118"/>
    </properties>
   </object>
   <object id="31" gid="41" x="176" y="32" width="16" height="16">
    <properties>
-    <property name="event" value="player"/>
+    <property name="event" value="118"/>
+   </properties>
+  </object>
+  <object id="32" gid="1689" x="320" y="16" width="16" height="16">
+   <properties>
+    <property name="visible" value="false"/>
    </properties>
   </object>
  </objectgroup>
