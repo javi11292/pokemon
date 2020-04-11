@@ -1,4 +1,4 @@
-import { Spritesheet, AnimatedSprite, Loader, UPDATE_PRIORITY } from "pixi.js"
+import { Spritesheet, AnimatedSprite, Loader } from "pixi.js"
 import localForage from "localforage"
 import { getData, CHARACTERS } from "images/data/characters"
 import texture from "images/characters.png"
@@ -200,7 +200,7 @@ export function createCharacter(game, id) {
 
   addSpriteSheet()
 
-  character.game.app.ticker.add(update, null, UPDATE_PRIORITY.LOW)
+  character.game.app.ticker.add(update)
 
   return character
 }

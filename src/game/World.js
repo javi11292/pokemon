@@ -1,4 +1,4 @@
-import { Graphics, Loader, Container } from "pixi.js"
+import { Graphics, Loader, Container, UPDATE_PRIORITY } from "pixi.js"
 import worldTexture from "images/world.png"
 import worldData from "images/data/world.xml"
 import { SIZE } from "libraries/constants"
@@ -152,7 +152,7 @@ export function createWorld(game) {
 
   game.app.stage.addChildAt(world.camera, 0)
 
-  game.app.ticker.add(update)
+  game.app.ticker.add(update, null, UPDATE_PRIORITY.INTERACTION)
 
   return world
 }
