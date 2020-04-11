@@ -17,7 +17,7 @@ export default getStore({
     },
   },
   message: {
-    state: "",
-    reducer: (state, value) => value
+    state: { value: "", callback: null },
+    reducer: (state, value) => typeof value === "function" ? value(state) : value
   }
 })

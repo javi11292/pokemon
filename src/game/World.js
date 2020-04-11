@@ -40,6 +40,7 @@ export function createWorld(game) {
     tileAt,
     setLocation,
     load,
+    events: null,
     get location() {
       return location
     },
@@ -88,6 +89,8 @@ export function createWorld(game) {
     const { location, layer } = world
     let locationMap = world.map[location + layer]
 
+    const eventsImport = import(`scripts/${world.location}/${world.layer}`).catch(() => ({}))
+
     if (!locationMap) {
       locationMap = new Container()
       const { default: url } = await import(`maps/${location}.xml`)
@@ -95,7 +98,7 @@ export function createWorld(game) {
       const { tileSize, columns } = world.data
       const { value: map, objects } = layers[layer]
 
-      map.split("\n").forEach((row, i) => row.split(",").forEach((value, j) => {
+      map.trim().split("\n").forEach((row, i) => row.split(",").forEach((value, j) => {
         if (!value || value === "0") return
         const id = parseInt(value, 10) - 1
         const object = world.data[id] || {}
@@ -134,6 +137,9 @@ export function createWorld(game) {
       world.map[location + layer] = locationMap
     }
 
+    const events = await eventsImport
+
+    world.events = events
     world.camera.removeChildren()
     world.camera.addChild(locationMap)
     if (position) world.game.player.position = position

@@ -46,6 +46,7 @@ export function createCharacter(game, id) {
   const position = createPosition(database)
 
   const character = {
+    database,
     game,
     still,
     face,
@@ -114,11 +115,15 @@ export function createCharacter(game, id) {
 
     if (character.nextTile.x === nextX && character.nextTile.y === nextY) return
 
+    const data = character.game.world.tileAt(nextX, nextY)
+
     character.nextTile = {
       x: nextX,
       y: nextY,
       data: character.game.world.tileAt(nextX, nextY),
     }
+
+    if (data.event === id) loadEvent(nextX, nextY)
   }
 
   function updatePosition(dimension, move) {
@@ -136,7 +141,7 @@ export function createCharacter(game, id) {
       const { data } = character.nextTile
       if (data.location || data.layer) {
         const [x, y] = data.position.split(",")
-        character.game.world.setLocation(data.location, data.layer, { x: x * SIZE, y: y * SIZE + SIZE })
+        character.game.world.setLocation(data.location, data.layer, { x: x * SIZE, y: y * SIZE })
       }
     }
   }
@@ -187,6 +192,10 @@ export function createCharacter(game, id) {
         character.game.app.stage.addChild(sprite)
       })
     })
+  }
+
+  async function loadEvent(x, y) {
+    game.world.events[id][`${x}-${y}`](character.game)
   }
 
   addSpriteSheet()

@@ -39,8 +39,8 @@ export async function parseMap(url) {
         const objects = Array.from(layer.children).reduce((acc, object) => {
           acc.push({
             id: object.getAttribute("gid"),
-            x: object.getAttribute("x"),
-            y: object.getAttribute("y"),
+            x: parseInt(object.getAttribute("x"), 10),
+            y: parseInt(object.getAttribute("y"), 10) - object.getAttribute("width"),
             ...Array.from(object.children[0].children).reduce((acc, property) => {
               acc[property.getAttribute("name")] = property.getAttribute("value")
               return acc

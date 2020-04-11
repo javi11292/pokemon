@@ -26,12 +26,16 @@ function useLogic() {
     return () => events.forEach(event => window.removeEventListener(...event))
   }, [])
 
+  useEffect(() => {
+    if (message.value) dispatchButton(null)
+  }, [message.value])
+
   function dispatchButton(button) {
     setButtonPress(button)
     window.dispatchEvent(new CustomEvent("action", { detail: button }))
   }
 
-  return { buttonPress, message }
+  return { buttonPress, message: message.value }
 }
 
 export default useLogic
