@@ -1,1 +1,0 @@
-{"version":3,"sources":["maps/PalletTownRooms.xml"],"names":["module","exports"],"mappings":"qFAAAA,EAAOC,QAAU,IAA0B","file":"static/js/6.13d89351.chunk.js","sourcesContent":["module.exports = __webpack_public_path__ + \"static/media/PalletTownRooms.e36c5cde.xml\";"],"sourceRoot":""}

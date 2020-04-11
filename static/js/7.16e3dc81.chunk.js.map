@@ -1,1 +1,0 @@
-{"version":3,"sources":["scripts/welcome.txt"],"names":["module","exports"],"mappings":"oFAAAA,EAAOC,QAAU,IAA0B","file":"static/js/7.16e3dc81.chunk.js","sourcesContent":["module.exports = __webpack_public_path__ + \"static/media/welcome.ea1b776d.txt\";"],"sourceRoot":""}
