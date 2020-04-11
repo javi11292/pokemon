@@ -6,7 +6,9 @@ export async function loadText(id, callback) {
     const text = await fetch(url).then(response => response.text())
     callback({ value: text })
     return text
-  } catch { }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export async function parseData(url) {
@@ -23,41 +25,55 @@ export async function parseData(url) {
       }, {})
       return acc
     }, { tileSize: xml.getAttribute("tilewidth"), columns: xml.getAttribute("columns") })
-  } catch { }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export async function parseMap(url) {
   try {
     const text = await fetch(url).then(response => response.text())
     const [xml] = Array.from(parser.parseFromString(text, "application/xml").children)
-    const [, ...layers] = xml.children
+    const layers = Array.from(xml.children)
 
     return layers.reduce((acc, layer) => {
+      if (layer.nodeName === "tileset") {
+        const gids = acc.gids || {}
+        gids[layer.getAttribute("source").match(/([^/]+).xml/)[1]] = parseInt(layer.getAttribute("firstgid"), 10)
+        return { ...acc, gids }
+      }
+
       const tileData = acc[layer.getAttribute("name")] || {}
 
       if (layer.nodeName === "objectgroup") {
         const objects = Array.from(layer.children).reduce((acc, object) => {
+          const properties = object.children[0] ? Array.from(object.children[0].children).reduce((acc, property) => {
+            acc[property.getAttribute("name")] = property.getAttribute("value")
+            return acc
+          }, {}) : {}
+
           acc.push({
-            id: object.getAttribute("gid"),
+            id: parseInt(object.getAttribute("gid"), 10),
             x: parseInt(object.getAttribute("x"), 10),
             y: parseInt(object.getAttribute("y"), 10) - object.getAttribute("width"),
-            ...Array.from(object.children[0].children).reduce((acc, property) => {
-              acc[property.getAttribute("name")] = property.getAttribute("value")
-              return acc
-            }, {})
+            ...properties,
           })
 
           return acc
         }, [])
 
         Object.assign(tileData, { objects })
-      } else {
-        Object.assign(tileData, { value: layer.children[0].innerHTML })
+      }
+
+      if (layer.nodeName === "layer") {
+        Object.assign(tileData, { value: layer.children[0].innerHTML.trim() })
       }
 
       return { ...acc, [layer.getAttribute("name")]: tileData }
     }, {})
-  } catch { }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export function upperCase(string = "") {

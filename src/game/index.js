@@ -5,7 +5,7 @@ import { loadText } from "libraries/util"
 import { createPlayer } from "./Player"
 import { createWorld } from "./World"
 
-function prepareGame(game, view) {
+async function prepareGame(game, view) {
   utils.skipHello()
   settings.SCALE_MODE = SCALE_MODES.NEAREST
 
@@ -18,7 +18,7 @@ function prepareGame(game, view) {
   game.app.renderer.plugins.accessibility.destroy()
   delete game.app.renderer.plugins.accesibility
 
-  game.player = createPlayer(game)
+  game.player = await createPlayer(game)
   game.world = createWorld(game)
 }
 
@@ -38,7 +38,7 @@ export async function createGame({ view, setMessage }) {
     layer: await playerDB.getItem("layer"),
   }
 
-  prepareGame(game, view)
+  await prepareGame(game, view)
 
   if (!save.position) {
     loadText("welcome", setMessage)
@@ -46,7 +46,6 @@ export async function createGame({ view, setMessage }) {
     game.world.location = "PalletTownRooms"
     game.world.layer = "house1 f2"
   } else {
-    game.player.position = save.position
     game.world.location = save.location
     game.world.layer = save.layer
   }

@@ -4,6 +4,7 @@ import worldData from "images/data/world.xml"
 import { SIZE } from "libraries/constants"
 import { parseData, parseMap } from "libraries/util"
 import { playerDB } from "libraries/database"
+import { createCharacter } from "./Character"
 
 function loadTexture() {
   return new Promise(resolve => {
@@ -13,10 +14,8 @@ function loadTexture() {
   })
 }
 
-function addGraphic({ texture, map, tileX, tileY, x, y, object, tileSize }) {
+function addGraphic({ texture, map, tileX, tileY, x, y, tileSize }) {
   const graphics = new Graphics()
-  graphics.name = `${x}-${y}`
-  graphics.data = object
 
   graphics.beginTextureFill({ texture })
   graphics.drawRect(tileX, tileY, tileSize, tileSize)
@@ -58,6 +57,8 @@ export function createWorld(game) {
     texture: null,
     data: null,
     map: {},
+    tiles: {},
+    characters: {},
     camera: new Container(),
   }
 
@@ -86,24 +87,32 @@ export function createWorld(game) {
   }
 
   async function loadMapLocation(position) {
+    const eventsImport = import(`scripts/${world.location}/${world.layer}`).catch(() => ({ default: {} }))
     const { location, layer } = world
     let locationMap = world.map[location + layer]
-
-    const eventsImport = import(`scripts/${world.location}/${world.layer}`).catch(() => ({}))
+    let locationTiles = world.tiles[location + layer]
+    let locationCharacters = world.characters[location + layer]
 
     if (!locationMap) {
       locationMap = new Container()
+      locationTiles = {}
+      locationCharacters = []
+
       const { default: url } = await import(`maps/${location}.xml`)
       const layers = await parseMap(url)
       const { tileSize, columns } = world.data
-      const { value: map, objects } = layers[layer]
+      const { value: map, objects, } = layers[layer]
+      const promises = []
 
-      map.trim().split("\n").forEach((row, i) => row.split(",").forEach((value, j) => {
+      map.split("\n").forEach((row, i) => row.split(",").forEach((value, j) => {
         if (!value || value === "0") return
-        const id = parseInt(value, 10) - 1
+
+        const id = parseInt(value, 10) - layers.gids.world
         const object = world.data[id] || {}
         const tileX = (id % columns) * tileSize
         const tileY = Math.floor(id / columns) * tileSize
+
+        locationTiles[`${j}-${i}`] = object
 
         addGraphic({
           texture: world.texture,
@@ -113,31 +122,47 @@ export function createWorld(game) {
           x: j,
           y: i,
           tileSize,
-          object,
         })
       }))
 
-      objects.forEach(object => {
-        const id = parseInt(object.id, 10) - 1
-        const tileX = (id % columns) * tileSize
-        const tileY = Math.floor(id / columns) * tileSize
+      objects.forEach(async object => {
+        if (!layers.gids.characters || object.id < layers.gids.characters) {
+          const id = object.id - layers.gids.world
+          const tileX = (id % columns) * tileSize
+          const tileY = Math.floor(id / columns) * tileSize
 
-        addGraphic({
-          texture: world.texture,
-          map: locationMap,
-          tileX,
-          tileY,
-          x: object.x / tileSize,
-          y: object.y / tileSize,
-          tileSize,
-          object: { ...(world.data[id] || {}), ...object },
-        })
+          locationTiles[`${object.x / tileSize}-${object.y / tileSize}`] = { ...(world.data[id] || {}), ...object }
+
+          addGraphic({
+            texture: world.texture,
+            map: locationMap,
+            tileX,
+            tileY,
+            x: object.x / tileSize,
+            y: object.y / tileSize,
+            tileSize,
+          })
+        } else {
+          const id = object.id - layers.gids.characters
+          const promise = createCharacter(world.game, id, locationMap, SIZE * object.x / tileSize, SIZE * object.y / tileSize)
+          promises.push(promise)
+
+          const character = await promise
+          locationCharacters.push(character)
+
+          character.sprite.visible = object.visible !== "false"
+        }
+
       })
 
+      await Promise.all(promises)
+
       world.map[location + layer] = locationMap
+      world.tiles[location + layer] = locationTiles
+      world.characters[location + layer] = locationCharacters
     }
 
-    const events = await eventsImport
+    const { default: events } = await eventsImport
 
     world.events = events
     world.camera.removeChildren()
@@ -146,8 +171,8 @@ export function createWorld(game) {
   }
 
   function tileAt(x, y) {
-    if (!world.camera.children.length) return {}
-    return world.camera.getChildAt(0).getChildByName(`${x}-${y}`)?.data || {}
+    if (!world.tiles[location + layer]) return {}
+    return world.tiles[location + layer][`${x}-${y}`] || {}
   }
 
   game.app.stage.addChildAt(world.camera, 0)

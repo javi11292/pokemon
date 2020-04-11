@@ -5,7 +5,7 @@ const COLUMNS = 8
 const ROTATE = "rotate"
 
 export const CHARACTERS = {
-  PLAYER: [6, 14]
+  PLAYER: 118,
 }
 
 function getFrame(id) {
@@ -17,57 +17,55 @@ function getFrame(id) {
   }
 }
 
-export function getData([x, y]) {
-  const id = y * COLUMNS + x
-
+export function getData(id) {
   return {
     meta: {},
     frames: {
-      stillDown: {
+      ["stillDown" + id]: {
         frame: getFrame(id),
       },
-      stillUp: {
+      ["stillUp" + id]: {
         frame: getFrame(id + 1),
       },
-      stillLeft: {
+      ["stillLeft" + id]: {
         frame: getFrame(id + 2),
       },
-      stillRight: {
+      ["stillRight" + id]: {
         frame: getFrame(id + 2),
         [ROTATE]: groupD8.MIRROR_HORIZONTAL,
       },
 
-      walkDown0: {
+      ["walkDown0" + id]: {
         frame: getFrame(id + 3)
       },
-      walkDown1: {
+      ["walkDown1" + id]: {
         frame: getFrame(id + 3),
         [ROTATE]: groupD8.MIRROR_HORIZONTAL,
       },
 
-      walkUp0: {
+      ["walkUp0" + id]: {
         frame: getFrame(id + 4),
       },
-      walkUp1: {
+      ["walkUp1" + id]: {
         frame: getFrame(id + 4),
         [ROTATE]: groupD8.MIRROR_HORIZONTAL,
       },
 
-      walkLeft: {
+      ["walkLeft" + id]: {
         frame: getFrame(id + 5),
       },
 
-      walkRight: {
+      ["walkRight" + id]: {
         frame: getFrame(id + 5),
         [ROTATE]: groupD8.MIRROR_HORIZONTAL,
       },
     },
 
     animations: {
-      walkDown: ["walkDown0", "stillDown", "walkDown1", "stillDown"],
-      walkUp: ["walkUp0", "stillUp", "walkUp1", "stillUp"],
-      walkLeft: ["walkLeft", "stillLeft"],
-      walkRight: ["walkRight", "stillRight"],
+      walkDown: ["walkDown0" + id, "stillDown" + id, "walkDown1" + id, "stillDown" + id],
+      walkUp: ["walkUp0" + id, "stillUp" + id, "walkUp1" + id, "stillUp" + id],
+      walkLeft: ["walkLeft" + id, "stillLeft" + id],
+      walkRight: ["walkRight" + id, "stillRight" + id],
     },
   }
 }

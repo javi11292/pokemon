@@ -1,11 +1,26 @@
+import { CHARACTERS } from "images/data/characters"
+import { SIZE } from "libraries/constants"
 import { createCharacter, STATES } from "./Character"
 
-export function createPlayer(game) {
-  const player = createCharacter(game, "player")
-  const { walk: characterWalk, face: characterFace, still: characterStill } = player
+export async function createPlayer(game) {
+  const player = await createCharacter(
+    game,
+    CHARACTERS.PLAYER,
+    game.app.stage,
+    game.app.screen.width / 2 - SIZE / 2,
+    game.app.screen.height / 2 - SIZE / 2)
+
+  const {
+    walk: characterWalk,
+    face: characterFace,
+    still: characterStill,
+    updateState: characterUpdateState,
+  } = player
   player.still = still
   player.face = face
   player.walk = walk
+  player.updateState = updateState
+  player.postUpdate = null
 
   let faceTimeout = null
 
@@ -22,6 +37,15 @@ export function createPlayer(game) {
   function walk(direction) {
     if (player.direction !== direction && player.state !== STATES.WALK) face(direction)
     else characterWalk(direction)
+  }
+
+  function updateState() {
+    characterUpdateState()
+    const { data } = player.nextTile
+    if (data.location || data.layer) {
+      const [x, y] = data.position.split(",")
+      game.world.setLocation(data.location, data.layer, { x: x * SIZE, y: y * SIZE })
+    }
   }
 
   return player
