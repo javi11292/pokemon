@@ -1,2 +1,0 @@
-(this.webpackJsonpclient=this.webpackJsonpclient||[]).push([[0],{123:function(e,n,t){"use strict";t.r(n),t.d(n,"player",(function(){return s}));var s={"10-1":function(e){e.setMessage({value:"\xa1Eh tu, espera wey!"})},"11-1":function(e){s["10-1"](e)}}}}]);
-//# sourceMappingURL=0.5d73ccf4.chunk.js.map
