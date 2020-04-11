@@ -18,7 +18,6 @@ function useLogic() {
           if (message.callback) message.callback()
           return { value: "" }
         })
-        setScroll(0)
       }
     }
 
@@ -26,7 +25,10 @@ function useLogic() {
     return () => window.removeEventListener("pointerdown", handleTouch)
   }, [setMessage, hasScroll])
 
-  useEffect(checkScroll, [message.value])
+  useEffect(() => {
+    checkScroll()
+    setScroll(0)
+  }, [message.value])
 
   function handleTransition() {
     isScrolling.current = false
