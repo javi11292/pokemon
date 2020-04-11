@@ -90,11 +90,11 @@ export function createCharacter(game, id) {
     character.nextState = STATES.WALK
   }
 
-  function update() {
+  async function update() {
     const speedX = character.direction === CONTROLS.RIGHT ? 1 : character.direction === CONTROLS.LEFT ? -1 : 0
     const speedY = character.direction === CONTROLS.DOWN ? 1 : character.direction === CONTROLS.UP ? -1 : 0
 
-    if (character.state === STATES.WALK && !character.speed.x && !character.speed.y) updateNextTile(speedX, speedY)
+    if (character.state === STATES.WALK && !character.speed.x && !character.speed.y) await updateNextTile(speedX, speedY)
 
     if (character.state === STATES.WALK && !character.speed.x && !character.speed.y && character.nextTile.data.collision === "false") {
       character.speed.x = speedX
@@ -109,7 +109,7 @@ export function createCharacter(game, id) {
     updateTextures()
   }
 
-  function updateNextTile(speedX, speedY) {
+  async function updateNextTile(speedX, speedY) {
     const nextX = Math.floor(character.position.x / SIZE + speedX)
     const nextY = Math.floor(character.position.y / SIZE + speedY)
 
@@ -123,7 +123,7 @@ export function createCharacter(game, id) {
       data: character.game.world.tileAt(nextX, nextY),
     }
 
-    if (data.event === id) loadEvent(nextX, nextY)
+    if (data.event === id) await loadEvent(nextX, nextY)
   }
 
   function updatePosition(dimension, move) {
@@ -195,7 +195,7 @@ export function createCharacter(game, id) {
   }
 
   async function loadEvent(x, y) {
-    game.world.events[id][`${x}-${y}`](character.game)
+    await game.world.events[id][`${x}-${y}`](character.game)
   }
 
   addSpriteSheet()

@@ -42,7 +42,7 @@ export async function createGame({ view, setMessage }) {
 
   if (!save.position) {
     loadText("welcome", setMessage)
-    game.player.position = { x: SIZE * 3, y: SIZE * 7 }
+    game.player.position = { x: SIZE * 3, y: SIZE * 6 }
     game.world.location = "PalletTownRooms"
     game.world.layer = "house1 f2"
   } else {

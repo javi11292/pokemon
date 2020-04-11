@@ -4,7 +4,7 @@ export async function loadText(id, callback) {
   try {
     const { default: url } = await import(`scripts/${id}.txt`)
     const text = await fetch(url).then(response => response.text())
-    if (callback) callback(text)
+    callback({ value: text })
     return text
   } catch { }
 }
