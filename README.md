@@ -4,3 +4,4 @@ Tile custom properties
   position: x,y starting player position
   collision: false to disable collision
   event: id of the character firing the event
+  visible: false to hide the sprite
