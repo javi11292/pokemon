@@ -18,6 +18,7 @@ function useLogic() {
           if (message.callback) message.callback()
           return { value: "" }
         })
+        setScroll(0)
       }
     }
 
@@ -33,7 +34,6 @@ function useLogic() {
   }
 
   function checkScroll() {
-    setScroll(0)
     if (!messageRef.current) setHasScroll(false)
     else setHasScroll(-messageRef.current.offsetTop + messageRef.current.clientHeight < messageRef.current.scrollHeight)
   }
