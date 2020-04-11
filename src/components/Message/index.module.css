@@ -41,6 +41,7 @@
   height: 100%;
   transition: top 1s;
   top: var(--scroll);
+  user-select: none;
 }
 
 .icon {
