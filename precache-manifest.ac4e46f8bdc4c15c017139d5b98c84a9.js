@@ -1,15 +1,15 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "06cc33b2c272f7a7d3511cd016634f1a",
+    "revision": "63e4774320c9ee54af9f19f390f27e60",
     "url": "/pokemon/index.html"
   },
   {
-    "revision": "7ea51a32530e65af7337",
+    "revision": "0f4e876ed72b7c8d201a",
     "url": "/pokemon/static/css/main.a501546a.chunk.css"
   },
   {
-    "revision": "40e5634c586c46f9f91e",
-    "url": "/pokemon/static/js/0.d823722e.chunk.js"
+    "revision": "053badef0dbbe2199450",
+    "url": "/pokemon/static/js/0.810e55dd.chunk.js"
   },
   {
     "revision": "23689f7e493abac9de9b",
@@ -24,32 +24,32 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/pokemon/static/js/4.805da41b.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "2c94ec391a51d91ae5ee",
-    "url": "/pokemon/static/js/5.5f95d23d.chunk.js"
+    "revision": "8d0b884b00807df34f09",
+    "url": "/pokemon/static/js/5.48795a4e.chunk.js"
   },
   {
     "revision": "177bc60a4fb95afc0a46a2444ff94f2b",
-    "url": "/pokemon/static/js/5.5f95d23d.chunk.js.LICENSE.txt"
+    "url": "/pokemon/static/js/5.48795a4e.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "9ddc8e56410465dcd9aa",
-    "url": "/pokemon/static/js/6.b0bafd50.chunk.js"
+    "revision": "c32b8a179b62418cd437",
+    "url": "/pokemon/static/js/6.cb6cf517.chunk.js"
   },
   {
-    "revision": "813b3487b8b57592ebf2",
-    "url": "/pokemon/static/js/7.ed2498ab.chunk.js"
+    "revision": "62810d084ad7e5918c39",
+    "url": "/pokemon/static/js/7.4a0f57f2.chunk.js"
   },
   {
     "revision": "c35cfbea01e1f6d6b3ba",
     "url": "/pokemon/static/js/8.cf9c0d8e.chunk.js"
   },
   {
-    "revision": "7ea51a32530e65af7337",
-    "url": "/pokemon/static/js/main.70f4fb00.chunk.js"
+    "revision": "0f4e876ed72b7c8d201a",
+    "url": "/pokemon/static/js/main.f4179305.chunk.js"
   },
   {
-    "revision": "42ecd30dea4639ad3f41",
-    "url": "/pokemon/static/js/runtime-main.8de1345f.js"
+    "revision": "3df6996e9444eb39894d",
+    "url": "/pokemon/static/js/runtime-main.f9de98a8.js"
   },
   {
     "revision": "7153730c3844dd0c3f57f8203532a2f8",
