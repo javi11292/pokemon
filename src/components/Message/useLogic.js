@@ -19,21 +19,21 @@ function useLogic() {
   }
 
   useEffect(() => {
+    if (!message.value) return
+
     function handleTouch() {
       if (hasScroll && !isScrolling.current) {
         setScroll(scroll => scroll + 1)
         isScrolling.current = true
       } else if (!hasScroll) {
-        setMessage(message => {
-          if (message.callback) message.callback()
-          return { value: "" }
-        })
+        setMessage({ value: "" })
+        if (message.callback) message.callback()
       }
     }
 
     window.addEventListener("pointerdown", handleTouch)
     return () => window.removeEventListener("pointerdown", handleTouch)
-  }, [setMessage, hasScroll])
+  }, [setMessage, hasScroll, message])
 
   useEffect(() => {
     setScroll(0)

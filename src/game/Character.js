@@ -29,6 +29,12 @@ export async function createCharacter(game, id, container, x, y) {
     walk,
     updateState,
     postUpdate,
+    get event() {
+      return event
+    },
+    set event(newEvent) {
+      event = createEvent(newEvent)
+    },
     sprite: null,
     state: STATES.STILL,
     direction: CONTROLS.DOWN,
@@ -68,11 +74,15 @@ export async function createCharacter(game, id, container, x, y) {
     character.nextState = STATES.WALK
   }
 
-  async function update() {
+  function update() {
     const speedX = character.direction === CONTROLS.RIGHT ? 1 : character.direction === CONTROLS.LEFT ? -1 : 0
     const speedY = character.direction === CONTROLS.DOWN ? 1 : character.direction === CONTROLS.UP ? -1 : 0
 
-    if (character.state === STATES.WALK && !character.speed.x && !character.speed.y) await updateNextTile(speedX, speedY)
+    if (character.state === STATES.WALK && !character.speed.x && !character.speed.y) updateNextTile(speedX, speedY)
+
+    if (event && event.check()) {
+      event = null
+    }
 
     if (character.state === STATES.WALK && !character.speed.x && !character.speed.y && character.nextTile.data.collision === false) {
       character.speed.x = speedX
@@ -93,7 +103,7 @@ export async function createCharacter(game, id, container, x, y) {
     character.sprite.y = position.y
   }
 
-  async function updateNextTile(speedX, speedY) {
+  function updateNextTile(speedX, speedY) {
     const nextX = Math.floor(position.x / SIZE + speedX)
     const nextY = Math.floor(position.y / SIZE + speedY)
 
@@ -106,8 +116,6 @@ export async function createCharacter(game, id, container, x, y) {
       y: nextY,
       data,
     }
-
-    if (data.event === id.toString()) await loadEvent(nextX, nextY)
   }
 
   function updatePosition(dimension, move) {
@@ -158,21 +166,19 @@ export async function createCharacter(game, id, container, x, y) {
       character.textures.walkRight = getTextures(spriteSheet, "walkRight")
 
       const sprite = new AnimatedSprite(character.textures[character.state + upperCase(character.direction)])
+      character.sprite = sprite
 
       sprite.width = SIZE
       sprite.height = SIZE
       sprite.animationSpeed = 0.1
       sprite.x = x
       sprite.y = y
-      character.sprite = sprite
 
       container.addChild(sprite)
     })
   }
 
-  async function loadEvent(x, y) {
-    await game.world.events[id][`${x}-${y}`](character.game)
-  }
+  let event = null
 
   addSpriteSheet()
 
@@ -283,6 +289,26 @@ function getFrame(id) {
     w: TILE_SIZE,
     h: TILE_SIZE,
   }
+}
+
+function createEvent(callback) {
+  let resolve = null
+
+  const event = {
+    check,
+    promise: new Promise(callback => {
+      resolve = callback
+    }),
+  }
+
+  function check() {
+    if (callback()) {
+      resolve()
+      return true
+    }
+  }
+
+  return event
 }
 
 let resources = null

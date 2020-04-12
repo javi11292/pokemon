@@ -12,6 +12,7 @@ export async function createGame({ view, setMessage }) {
     action: null,
     player: null,
     world: null,
+    characters: {},
     enableControls: false,
   }
 

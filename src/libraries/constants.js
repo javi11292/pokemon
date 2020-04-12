@@ -10,4 +10,5 @@ export const CONTROLS = {
 
 export const CHARACTERS = {
   PLAYER: 118,
+  OAK: 124,
 }

@@ -29,10 +29,15 @@ export async function createPlayer(game) {
     characterUpdateState()
 
     const { data } = player.nextTile
+    if (data.event) loadEvent(data.event)
     if (data.location || data.layer) {
       const [x, y] = data.position.split(",")
       game.world.setLocation(data.location, data.layer, { x: x * SIZE, y: y * SIZE })
     }
+  }
+
+  function loadEvent(id) {
+    game.world.events[id]()
   }
 
   const {

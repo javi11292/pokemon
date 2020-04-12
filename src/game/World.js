@@ -67,17 +67,16 @@ export async function createWorld(game) {
   }
 
   async function loadMapLocation(position) {
-    const eventsImport = import(`scripts/${world.location}/${world.layer}`).catch(() => ({ default: {} }))
+    const eventsImport = import(`scripts/${world.location}/${world.layer}`).catch(() => ({}))
 
     const { location, layer } = world
     let locationMap = world.map[location + layer]
-    let locationTiles = world.tiles[location + layer]
     let locationCharacters = world.characters[location + layer]
 
     if (!locationMap) {
+      const locationTiles = {}
       locationMap = new Container()
-      locationTiles = {}
-      locationCharacters = []
+      locationCharacters = {}
 
       const { layers, tilesets, width } = await import(`maps/${location}.json`)
       const promises = []
@@ -97,11 +96,12 @@ export async function createWorld(game) {
       world.characters[location + layer] = locationCharacters
     }
 
-    const { default: events } = await eventsImport
+    const { getEvents } = await eventsImport
 
-    world.events = events
+    world.events = getEvents ? getEvents(game) : null
     world.camera.removeChildren()
     world.camera.addChild(locationMap)
+    world.game.characters = locationCharacters
     if (position) world.game.player.position = position
   }
 
@@ -165,12 +165,12 @@ export async function createWorld(game) {
         const promise = createCharacter(world.game, id, locationMap, SIZE * object.x / tileSize, SIZE * (object.y / tileSize - 1))
         promises.push(promise)
 
-        const properties = object.properties.reduce(addProperties, {})
+        const properties = object.properties ? object.properties.reduce(addProperties, {}) : {}
 
         const character = await promise
         character.sprite.visible = properties.visible !== false
 
-        locationCharacters.push(character)
+        locationCharacters[id] = character
       }
     })
   }
