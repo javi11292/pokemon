@@ -1,38 +1,11 @@
 import { Graphics, Loader, Container, UPDATE_PRIORITY } from "pixi.js"
 import worldTexture from "images/world.png"
-import worldData from "images/data/world.xml"
+import worldData from "images/data/world.json"
 import { SIZE } from "libraries/constants"
-import { parseData, parseMap } from "libraries/util"
 import { playerDB } from "libraries/database"
 import { createCharacter } from "./Character"
 
-function loadTexture() {
-  return new Promise(resolve => {
-    new Loader().add("world", worldTexture).load((loader, resources) => {
-      resolve(resources.world.texture)
-    })
-  })
-}
-
-function addGraphic({ texture, map, tileX, tileY, x, y, tileSize }) {
-  const graphics = new Graphics()
-
-  graphics.beginTextureFill({ texture })
-  graphics.drawRect(tileX, tileY, tileSize, tileSize)
-
-  graphics.width = SIZE
-  graphics.height = SIZE
-
-  graphics.x = -tileX * graphics.scale.x + x * SIZE
-  graphics.y = -tileY * graphics.scale.y + y * SIZE
-
-  map.addChild(graphics)
-}
-
-export function createWorld(game) {
-  let location = null
-  let layer = null
-
+export async function createWorld(game) {
   const world = {
     game,
     update,
@@ -62,14 +35,6 @@ export function createWorld(game) {
     camera: new Container(),
   }
 
-  function setLocation(location, layer, position) {
-    world.location = location || world.location
-    world.layer = layer || "index"
-    playerDB.setItem("location", world.location)
-    playerDB.setItem("layer", world.layer)
-    loadMapLocation(position)
-  }
-
   function update() {
     const position = world.game.player.position
     world.camera.pivot.x = -world.game.player.sprite?.x
@@ -78,16 +43,32 @@ export function createWorld(game) {
     world.camera.position.y = -position.y
   }
 
+  function setLocation(location, layer, position) {
+    world.location = location || world.location
+    world.layer = layer || "index"
+    playerDB.setItem("location", world.location)
+    playerDB.setItem("layer", world.layer)
+    loadMapLocation(position)
+  }
+
   async function load() {
-    const [texture, data] = await Promise.all([loadTexture(), parseData(worldData)])
+    const texture = await loadTexture()
     world.texture = texture
-    world.data = data
+    world.data = {
+      tileSize: worldData.tilewidth,
+      columns: worldData.columns,
+      tiles: worldData.tiles.reduce((acc, tile) => {
+        acc[tile.id] = tile.properties.reduce(addProperties, {})
+        return acc
+      }, {})
+    }
     await loadMapLocation()
     world.game.enableControls = true
   }
 
   async function loadMapLocation(position) {
     const eventsImport = import(`scripts/${world.location}/${world.layer}`).catch(() => ({ default: {} }))
+
     const { location, layer } = world
     let locationMap = world.map[location + layer]
     let locationTiles = world.tiles[location + layer]
@@ -98,61 +79,15 @@ export function createWorld(game) {
       locationTiles = {}
       locationCharacters = []
 
-      const { default: url } = await import(`maps/${location}.xml`)
-      const layers = await parseMap(url)
-      const { tileSize, columns } = world.data
-      const { value: map, objects, } = layers[layer]
+      const { layers, tilesets, width } = await import(`maps/${location}.json`)
       const promises = []
 
-      map.split("\n").forEach((row, i) => row.split(",").forEach((value, j) => {
-        if (!value || value === "0") return
+      layers.forEach(item => {
+        if (item.name !== layer) return
 
-        const id = parseInt(value, 10) - layers.gids.world
-        const object = world.data[id] || {}
-        const tileX = (id % columns) * tileSize
-        const tileY = Math.floor(id / columns) * tileSize
+        if (item.type === "tilelayer") loadTile({ item, tilesets, locationTiles, locationMap, width })
 
-        locationTiles[`${j}-${i}`] = object
-
-        addGraphic({
-          texture: world.texture,
-          map: locationMap,
-          tileX,
-          tileY,
-          x: j,
-          y: i,
-          tileSize,
-        })
-      }))
-
-      objects.forEach(async object => {
-        if (!layers.gids.characters || object.id < layers.gids.characters) {
-          const id = object.id - layers.gids.world
-          const tileX = (id % columns) * tileSize
-          const tileY = Math.floor(id / columns) * tileSize
-
-          locationTiles[`${object.x / tileSize}-${object.y / tileSize}`] = { ...(world.data[id] || {}), ...object }
-
-          addGraphic({
-            texture: world.texture,
-            map: locationMap,
-            tileX,
-            tileY,
-            x: object.x / tileSize,
-            y: object.y / tileSize,
-            tileSize,
-          })
-        } else {
-          const id = object.id - layers.gids.characters
-          const promise = createCharacter(world.game, id, locationMap, SIZE * object.x / tileSize, SIZE * object.y / tileSize)
-          promises.push(promise)
-
-          const character = await promise
-          locationCharacters.push(character)
-
-          character.sprite.visible = object.visible !== "false"
-        }
-
+        if (item.type === "objectgroup") loadObject({ item, tilesets, locationTiles, locationCharacters, locationMap, promises })
       })
 
       await Promise.all(promises)
@@ -175,9 +110,105 @@ export function createWorld(game) {
     return world.tiles[location + layer][`${x}-${y}`] || {}
   }
 
+
+  function loadTile({ item, tilesets, locationTiles, locationMap, width }) {
+    const { tileSize, columns } = world.data
+
+    item.data.forEach((value, index) => {
+      if (!value) return
+      const id = parseInt(value, 10) - tilesets[0].firstgid
+      const object = world.data.tiles[id] || {}
+      const x = (index % width)
+      const y = Math.floor(index / width)
+      const tileX = (id % columns) * tileSize
+      const tileY = Math.floor(id / columns) * tileSize
+
+      locationTiles[`${x}-${y}`] = object
+
+      addGraphic({
+        texture: world.texture,
+        map: locationMap,
+        tileX,
+        tileY,
+        x,
+        y,
+        tileSize,
+      })
+    })
+  }
+
+  function loadObject({ item, tilesets, locationTiles, locationCharacters, locationMap, promises }) {
+    const { tileSize, columns } = world.data
+
+    item.objects.forEach(async object => {
+      const { gid } = object
+      if (!tilesets[1] || gid < tilesets[1].firstgid) {
+        const id = gid - tilesets[0].firstgid
+        const tileX = (id % columns) * tileSize
+        const tileY = Math.floor(id / columns) * tileSize
+        const x = object.x / tileSize
+        const y = object.y / tileSize - 1
+
+        locationTiles[`${x}-${y}`] = { ...(world.data.tiles[id] || {}), ...object.properties.reduce(addProperties, {}) }
+
+        addGraphic({
+          texture: world.texture,
+          map: locationMap,
+          tileX,
+          tileY,
+          x,
+          y,
+          tileSize,
+        })
+      } else {
+        const id = gid - tilesets[1].firstgid
+        const promise = createCharacter(world.game, id, locationMap, SIZE * object.x / tileSize, SIZE * (object.y / tileSize - 1))
+        promises.push(promise)
+
+        const properties = object.properties.reduce(addProperties, {})
+
+        const character = await promise
+        character.sprite.visible = properties.visible !== false
+
+        locationCharacters.push(character)
+      }
+    })
+  }
+
   game.app.stage.addChildAt(world.camera, 0)
 
   game.app.ticker.add(update, null, UPDATE_PRIORITY.INTERACTION)
 
+  let location = null
+  let layer = null
+
   return world
+}
+
+function loadTexture() {
+  return new Promise(resolve => {
+    new Loader().add("world", worldTexture).load((loader, resources) => {
+      resolve(resources.world.texture)
+    })
+  })
+}
+
+function addGraphic({ texture, map, tileX, tileY, x, y, tileSize }) {
+  const graphics = new Graphics()
+
+  graphics.beginTextureFill({ texture })
+  graphics.drawRect(tileX, tileY, tileSize, tileSize)
+
+  graphics.width = SIZE
+  graphics.height = SIZE
+
+  graphics.x = -tileX * graphics.scale.x + x * SIZE
+  graphics.y = -tileY * graphics.scale.y + y * SIZE
+
+  map.addChild(graphics)
+}
+
+function addProperties(acc, property) {
+  acc[property.name] = property.value
+  return acc
 }

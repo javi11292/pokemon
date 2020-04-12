@@ -1,5 +1,4 @@
-import { CHARACTERS } from "images/data/characters"
-import { SIZE } from "libraries/constants"
+import { SIZE, CHARACTERS } from "libraries/constants"
 import { createCharacter, STATES } from "./Character"
 
 export async function createPlayer(game) {
@@ -8,21 +7,8 @@ export async function createPlayer(game) {
     CHARACTERS.PLAYER,
     game.app.stage,
     game.app.screen.width / 2 - SIZE / 2,
-    game.app.screen.height / 2 - SIZE / 2)
-
-  const {
-    walk: characterWalk,
-    face: characterFace,
-    still: characterStill,
-    updateState: characterUpdateState,
-  } = player
-  player.still = still
-  player.face = face
-  player.walk = walk
-  player.updateState = updateState
-  player.postUpdate = null
-
-  let faceTimeout = null
+    game.app.screen.height / 2 - SIZE / 2,
+  )
 
   function still() {
     characterStill()
@@ -41,12 +27,28 @@ export async function createPlayer(game) {
 
   function updateState() {
     characterUpdateState()
+
     const { data } = player.nextTile
     if (data.location || data.layer) {
       const [x, y] = data.position.split(",")
       game.world.setLocation(data.location, data.layer, { x: x * SIZE, y: y * SIZE })
     }
   }
+
+  const {
+    walk: characterWalk,
+    face: characterFace,
+    still: characterStill,
+    updateState: characterUpdateState,
+  } = player
+
+  player.still = still
+  player.face = face
+  player.walk = walk
+  player.updateState = updateState
+  player.postUpdate = null
+
+  let faceTimeout = null
 
   return player
 }

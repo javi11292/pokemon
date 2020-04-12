@@ -1,58 +1,16 @@
-import { Spritesheet, AnimatedSprite, Loader } from "pixi.js"
+import { Spritesheet, AnimatedSprite, Loader, groupD8 } from "pixi.js"
 import localForage from "localforage"
-import { getData } from "images/data/characters"
 import texture from "images/characters.png"
 import { upperCase } from "libraries/util"
 import { CONTROLS, SIZE, SPEED } from "libraries/constants"
 
+const TILE_SIZE = 16
+const COLUMNS = 8
+const ROTATE = "rotate"
+
 export const STATES = {
   STILL: "still",
   WALK: "walk",
-}
-
-let resources = null
-let loadingResources = null
-
-async function loadResources() {
-  return new Promise(resolve => {
-    new Loader().add("characters", texture).load((loader, loadedResources) => {
-      resources = loadedResources
-      resolve()
-    })
-  })
-}
-
-function getTextures(spriteSheet, key) {
-  return spriteSheet.data.animations[key].map(id => {
-    const texture = spriteSheet.textures[id]
-    texture.rotate = spriteSheet.data.frames[id].rotate ?? texture.rotate
-    return texture
-  })
-}
-
-async function createPosition(database, startX, startY) {
-  const positionDB = await await database.getItem("position")
-  let x = positionDB?.x || startX
-  let y = positionDB?.y || startY
-
-  const position = {
-    get x() {
-      return x
-    },
-    set x(newX) {
-      x = newX
-      database.setItem("position", { ...position, x })
-    },
-    get y() {
-      return y
-    },
-    set y(newY) {
-      y = newY
-      database.setItem("position", { ...position, y })
-    }
-  }
-
-  return position
 }
 
 export async function createCharacter(game, id, container, x, y) {
@@ -116,7 +74,7 @@ export async function createCharacter(game, id, container, x, y) {
 
     if (character.state === STATES.WALK && !character.speed.x && !character.speed.y) await updateNextTile(speedX, speedY)
 
-    if (character.state === STATES.WALK && !character.speed.x && !character.speed.y && character.nextTile.data.collision === "false") {
+    if (character.state === STATES.WALK && !character.speed.x && !character.speed.y && character.nextTile.data.collision === false) {
       character.speed.x = speedX
       character.speed.y = speedY
       updatePosition(character.speed.x ? "x" : "y", true)
@@ -222,3 +180,110 @@ export async function createCharacter(game, id, container, x, y) {
 
   return character
 }
+
+async function loadResources() {
+  return new Promise(resolve => {
+    new Loader().add("characters", texture).load((loader, loadedResources) => {
+      resources = loadedResources
+      resolve()
+    })
+  })
+}
+
+async function createPosition(database, startX, startY) {
+  const positionDB = await await database.getItem("position")
+  let x = positionDB?.x || startX
+  let y = positionDB?.y || startY
+
+  const position = {
+    get x() {
+      return x
+    },
+    set x(newX) {
+      x = newX
+      database.setItem("position", { ...position, x })
+    },
+    get y() {
+      return y
+    },
+    set y(newY) {
+      y = newY
+      database.setItem("position", { ...position, y })
+    }
+  }
+
+  return position
+}
+
+function getTextures(spriteSheet, key) {
+  return spriteSheet.data.animations[key].map(id => {
+    const texture = spriteSheet.textures[id]
+    texture.rotate = spriteSheet.data.frames[id].rotate ?? texture.rotate
+    return texture
+  })
+}
+
+function getData(id) {
+  return {
+    meta: {},
+    frames: {
+      ["stillDown" + id]: {
+        frame: getFrame(id),
+      },
+      ["stillUp" + id]: {
+        frame: getFrame(id + 1),
+      },
+      ["stillLeft" + id]: {
+        frame: getFrame(id + 2),
+      },
+      ["stillRight" + id]: {
+        frame: getFrame(id + 2),
+        [ROTATE]: groupD8.MIRROR_HORIZONTAL,
+      },
+
+      ["walkDown0" + id]: {
+        frame: getFrame(id + 3)
+      },
+      ["walkDown1" + id]: {
+        frame: getFrame(id + 3),
+        [ROTATE]: groupD8.MIRROR_HORIZONTAL,
+      },
+
+      ["walkUp0" + id]: {
+        frame: getFrame(id + 4),
+      },
+      ["walkUp1" + id]: {
+        frame: getFrame(id + 4),
+        [ROTATE]: groupD8.MIRROR_HORIZONTAL,
+      },
+
+      ["walkLeft" + id]: {
+        frame: getFrame(id + 5),
+      },
+
+      ["walkRight" + id]: {
+        frame: getFrame(id + 5),
+        [ROTATE]: groupD8.MIRROR_HORIZONTAL,
+      },
+    },
+
+    animations: {
+      walkDown: ["walkDown0" + id, "stillDown" + id, "walkDown1" + id, "stillDown" + id],
+      walkUp: ["walkUp0" + id, "stillUp" + id, "walkUp1" + id, "stillUp" + id],
+      walkLeft: ["walkLeft" + id, "stillLeft" + id],
+      walkRight: ["walkRight" + id, "stillRight" + id],
+    },
+  }
+}
+
+function getFrame(id) {
+  return {
+    x: (id % COLUMNS) * TILE_SIZE,
+    y: (Math.floor(id / COLUMNS)) * TILE_SIZE,
+    w: TILE_SIZE,
+    h: TILE_SIZE,
+  }
+}
+
+let resources = null
+let loadingResources = null

@@ -1,5 +1,5 @@
 import { getEventsDB } from "libraries/database"
-import { CHARACTERS } from "images/data/characters"
+import { CHARACTERS } from "libraries/constants"
 
 const database = getEventsDB("PalletTown")
 

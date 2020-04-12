@@ -5,23 +5,6 @@ import { loadText } from "libraries/util"
 import { createPlayer } from "./Player"
 import { createWorld } from "./World"
 
-async function prepareGame(game, view) {
-  utils.skipHello()
-  settings.SCALE_MODE = SCALE_MODES.NEAREST
-
-  game.app = new Application({
-    view,
-    width: 1920,
-    height: 1080,
-  })
-
-  game.app.renderer.plugins.accessibility.destroy()
-  delete game.app.renderer.plugins.accesibility
-
-  game.player = await createPlayer(game)
-  game.world = createWorld(game)
-}
-
 export async function createGame({ view, setMessage }) {
   const game = {
     setMessage,
@@ -30,6 +13,28 @@ export async function createGame({ view, setMessage }) {
     player: null,
     world: null,
     enableControls: false,
+  }
+
+  function handleAction({ detail }) {
+    if (!game.enableControls) {
+      game.action = null
+    } else {
+      game.action = detail
+    }
+
+    switch (game.action) {
+      case CONTROLS.UP:
+      case CONTROLS.LEFT:
+      case CONTROLS.RIGHT:
+      case CONTROLS.DOWN: {
+        game.player.walk(game.action)
+        break
+      }
+
+      default: {
+        game.player.still()
+      }
+    }
   }
 
   const save = {
@@ -52,24 +57,22 @@ export async function createGame({ view, setMessage }) {
 
   game.world.load()
 
-  function handleAction({ detail }) {
-    if (!game.enableControls) return
-    game.action = detail
-
-    switch (game.action) {
-      case CONTROLS.UP:
-      case CONTROLS.LEFT:
-      case CONTROLS.RIGHT:
-      case CONTROLS.DOWN: {
-        game.player.walk(game.action)
-        break
-      }
-
-      default: {
-        game.player.still()
-      }
-    }
-  }
-
   window.addEventListener("action", handleAction)
+}
+
+async function prepareGame(game, view) {
+  utils.skipHello()
+  settings.SCALE_MODE = SCALE_MODES.NEAREST
+
+  game.app = new Application({
+    view,
+    width: 1920,
+    height: 1080,
+  })
+
+  game.app.renderer.plugins.accessibility.destroy()
+  delete game.app.renderer.plugins.accesibility
+
+  game.player = await createPlayer(game)
+  game.world = await createWorld(game)
 }
