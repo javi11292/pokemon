@@ -46,8 +46,5 @@
 
 .triangle * {
   fill: transparent;
-}
-
-.triangle :last-child {
   pointer-events: auto;
 }

@@ -1,5 +1,5 @@
 import localForage from "localforage"
-import { CHARACTERS } from "images/data/characters"
+import { CHARACTERS } from "./constants"
 
 export const playerDB = localForage.createInstance({ name: CHARACTERS.PLAYER })
 

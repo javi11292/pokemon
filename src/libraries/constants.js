@@ -9,3 +9,7 @@ export const CONTROLS = {
   RIGHT: "right",
   DOWN: "down",
 }
+
+export const CHARACTERS = {
+  PLAYER: 118,
+}

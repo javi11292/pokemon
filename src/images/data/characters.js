@@ -4,10 +4,6 @@ const SIZE = 16
 const COLUMNS = 8
 const ROTATE = "rotate"
 
-export const CHARACTERS = {
-  PLAYER: 118,
-}
-
 function getFrame(id) {
   return {
     x: (id % COLUMNS) * SIZE,

@@ -26,8 +26,8 @@ function useLogic() {
   }, [setMessage, hasScroll])
 
   useEffect(() => {
-    checkScroll()
     setScroll(0)
+    checkScroll()
   }, [message.value])
 
   function handleTransition() {
