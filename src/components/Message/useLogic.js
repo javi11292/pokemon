@@ -8,6 +8,16 @@ function useLogic() {
   const [hasScroll, setHasScroll] = useState(false)
   const isScrolling = useRef(false)
 
+  function handleTransition() {
+    isScrolling.current = false
+    checkScroll()
+  }
+
+  function checkScroll() {
+    if (!messageRef.current) setHasScroll(false)
+    else setHasScroll(-messageRef.current.offsetTop + messageRef.current.clientHeight < messageRef.current.scrollHeight)
+  }
+
   useEffect(() => {
     function handleTouch() {
       if (hasScroll && !isScrolling.current) {
@@ -29,16 +39,6 @@ function useLogic() {
     setScroll(0)
     checkScroll()
   }, [message.value])
-
-  function handleTransition() {
-    isScrolling.current = false
-    checkScroll()
-  }
-
-  function checkScroll() {
-    if (!messageRef.current) setHasScroll(false)
-    else setHasScroll(-messageRef.current.offsetTop + messageRef.current.clientHeight < messageRef.current.scrollHeight)
-  }
 
   return { message: message.value, messageRef, scroll, hasScroll, handleTransition }
 }

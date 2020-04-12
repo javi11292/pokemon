@@ -17,28 +17,7 @@ import Main from "components/Main"
 import { upperCase } from "libraries/util"
 import useLogic from "./useLogic"
 
-const includedKeys = /palettePrimary/
-
-const theme = createMuiTheme({
-  palette: {
-    type: "dark",
-    primary: green,
-    secondary: blue,
-  },
-})
-
-const style = `:root{${getStyle(theme)}}`
-
-function getStyle(value, path) {
-  if (value && typeof value === "object") {
-    return Object.entries(value).reduce((acc, [key, entry]) => {
-      const style = getStyle(entry, path ? `${path}${upperCase(key)}` : key)
-      return style ? acc + style : acc
-    }, "")
-  } else if (includedKeys.test(path)) {
-    return `--${path}:${value};`
-  }
-}
+const INCLUDED_KEYS = /palettePrimary/
 
 function App() {
   const { update, handleClose } = useLogic(style)
@@ -66,5 +45,26 @@ function App() {
     </StylesProvider>
   )
 }
+
+function getStyle(value, path) {
+  if (value && typeof value === "object") {
+    return Object.entries(value).reduce((acc, [key, entry]) => {
+      const style = getStyle(entry, path ? `${path}${upperCase(key)}` : key)
+      return style ? acc + style : acc
+    }, "")
+  } else if (INCLUDED_KEYS.test(path)) {
+    return `--${path}:${value};`
+  }
+}
+
+const theme = createMuiTheme({
+  palette: {
+    type: "dark",
+    primary: green,
+    secondary: blue,
+  },
+})
+
+const style = `:root{${getStyle(theme)}}`
 
 export default App
