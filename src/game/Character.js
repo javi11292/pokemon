@@ -29,6 +29,7 @@ export async function createCharacter(game, id, container, x, y) {
     walk,
     updateState,
     postUpdate,
+    onNextTileUpdate: () => { },
     get event() {
       return event
     },
@@ -41,7 +42,13 @@ export async function createCharacter(game, id, container, x, y) {
     speed: { x: 0, y: 0 },
     nextDirection: null,
     nextState: null,
-    nextTile: { data: {} },
+    get nextTile() {
+      return nextTile
+    },
+    set nextTile(newValue) {
+      nextTile = newValue
+      character.onNextTileUpdate(newValue)
+    },
     get position() {
       return position
     },
@@ -95,7 +102,7 @@ export async function createCharacter(game, id, container, x, y) {
     }
 
     updateTextures()
-    character.postUpdate && character.postUpdate()
+    character.postUpdate()
   }
 
   function postUpdate() {
@@ -179,6 +186,7 @@ export async function createCharacter(game, id, container, x, y) {
   }
 
   let event = null
+  let nextTile = { data: {} }
 
   addSpriteSheet()
 
@@ -198,8 +206,8 @@ async function loadResources() {
 
 async function createPosition(database, startX, startY) {
   const positionDB = await await database.getItem("position")
-  let x = positionDB?.x || startX
-  let y = positionDB?.y || startY
+  let x = positionDB?.x ?? startX
+  let y = positionDB?.y ?? startY
 
   const position = {
     get x() {

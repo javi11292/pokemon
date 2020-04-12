@@ -7,6 +7,8 @@ export function getEvents(game) {
   const events = {
     async meetOak() {
       if (await database.getItem("meetOak")) return
+      
+      game.enableControls = false
       await setMessage("¡Eh tu, espera!")
       const character = game.characters[CHARACTERS.OAK]
       character.position.x = 9 * SIZE
