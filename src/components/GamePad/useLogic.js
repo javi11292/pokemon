@@ -12,12 +12,12 @@ function useLogic() {
       if (!action) {
         handleRelease()
       } else {
-        dispatchButton(action)
+        setButtonPress(action)
       }
     }
 
     function handleRelease() {
-      dispatchButton(null)
+      setButtonPress(null)
     }
 
     const events = [["pointerdown", handlePress], ["pointermove", handlePress], ["pointerup", handleRelease]]
@@ -27,13 +27,12 @@ function useLogic() {
   }, [])
 
   useEffect(() => {
-    if (message.value) dispatchButton(null)
+    if (message.value) setButtonPress(null)
   }, [message.value])
 
-  function dispatchButton(button) {
-    setButtonPress(button)
-    window.dispatchEvent(new CustomEvent("action", { detail: button }))
-  }
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("action", { detail: buttonPress }))
+  }, [buttonPress])
 
   return { buttonPress, message: message.value }
 }
