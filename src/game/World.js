@@ -168,7 +168,7 @@ export async function createWorld(game) {
         const properties = object.properties ? object.properties.reduce(addProperties, {}) : {}
 
         const character = await promise
-        character.sprite.visible = properties.visible !== false
+        character.properties = { ...properties, ...character.properties }
 
         locationCharacters[id] = character
       }

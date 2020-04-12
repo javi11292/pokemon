@@ -7,13 +7,13 @@ export function getEvents(game) {
   const events = {
     async meetOak() {
       if (await database.getItem("meetOak")) return
-      
+
       game.enableControls = false
       await setMessage("¡Eh tu, espera!")
       const character = game.characters[CHARACTERS.OAK]
       character.position.x = 9 * SIZE
       character.position.y = 7 * SIZE
-      character.sprite.visible = true
+      character.properties = { ...character.properties, visible: true }
       character.walk("up")
 
       character.event = () => character.nextTile.y === 3

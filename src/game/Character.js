@@ -28,6 +28,14 @@ export async function createCharacter(game, id, container, x, y) {
     face,
     walk,
     updateState,
+    get properties() {
+      return properties
+    },
+    set properties(value) {
+      database.setItem("properties", value)
+      properties = value
+      character.sprite.visible = properties.visible !== false
+    },
     postUpdate,
     onNextTileUpdate: () => { },
     get event() {
@@ -187,6 +195,7 @@ export async function createCharacter(game, id, container, x, y) {
 
   let event = null
   let nextTile = { data: {} }
+  let properties = await database.getItem("properties") || {}
 
   addSpriteSheet()
 

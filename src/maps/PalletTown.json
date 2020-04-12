@@ -151,6 +151,12 @@
                  "height":16,
                  "id":38,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"visible",
+                         "type":"bool",
+                         "value":false
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
