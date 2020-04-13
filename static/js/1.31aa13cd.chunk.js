@@ -1,0 +1,2 @@
+(this.webpackJsonpclient=this.webpackJsonpclient||[]).push([[1],{116:function(e,n,o){"use strict";function s(e){return{choosePokemon:function(){e.setMessage({value:"Elige uno de los pokemon sobre la mesa"})}}}o.r(n),o.d(n,"getEvents",(function(){return s}))}}]);
+//# sourceMappingURL=1.31aa13cd.chunk.js.map
