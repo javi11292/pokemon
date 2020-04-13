@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import useStore from "hooks/useStore"
 
 function useLogic() {
-  const [buttonPress, setButtonPress] = useState()
+  const [buttonPress, setButtonPress] = useState({})
   const [message] = useStore("message")
 
   useEffect(() => {
@@ -10,14 +10,17 @@ function useLogic() {
       const target = document.elementFromPoint(event.x, event.y)
       const action = target?.parentElement.dataset.action
       if (!action) {
-        handleRelease()
+        handleRelease(event)
       } else {
-        setButtonPress(action)
+        setButtonPress(buttons => ({ ...buttons, [event.pointerId]: action }))
       }
     }
 
-    function handleRelease() {
-      setButtonPress(null)
+    function handleRelease(event) {
+      setButtonPress(buttons => {
+        const { [event.pointerId]: removed, ...otherButtons } = buttons
+        return otherButtons
+      })
     }
 
     const events = [["pointerdown", handlePress], ["pointermove", handlePress], ["pointerup", handleRelease]]
@@ -27,14 +30,14 @@ function useLogic() {
   }, [])
 
   useEffect(() => {
-    if (message.value) setButtonPress(null)
+    if (message.value) setButtonPress({})
   }, [message.value])
 
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("action", { detail: buttonPress }))
+    window.dispatchEvent(new CustomEvent("action", { detail: Object.values(buttonPress) }))
   }, [buttonPress])
 
-  return { buttonPress, message: message.value }
+  return { buttonPress: Object.values(buttonPress), message: message.value }
 }
 
 export default useLogic

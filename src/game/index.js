@@ -1,42 +1,54 @@
 import { Application, utils, settings, SCALE_MODES } from "pixi.js"
 import { CONTROLS, SIZE } from "libraries/constants"
 import { playerDB } from "libraries/database"
-import { loadText } from "libraries/util"
+import { getEvents } from "scripts"
 import { createPlayer } from "./Player"
 import { createWorld } from "./World"
 
 export async function createGame({ view, setMessage }) {
   const game = {
     setMessage,
+    events: null,
     app: null,
-    action: null,
+    action: [],
     player: null,
     world: null,
     characters: {},
     enableControls: false,
   }
 
+  game.events = getEvents(game)
+
   function handleAction({ detail }) {
     if (!game.enableControls) {
-      game.action = null
+      game.action = []
       return
     } else {
       game.action = detail
     }
 
-    switch (game.action) {
-      case CONTROLS.UP:
-      case CONTROLS.LEFT:
-      case CONTROLS.RIGHT:
-      case CONTROLS.DOWN: {
-        game.player.walk(game.action)
-        break
-      }
+    game.player.still()
 
-      default: {
-        game.player.still()
+    game.action.forEach(action => {
+      switch (action) {
+        case CONTROLS.UP:
+        case CONTROLS.LEFT:
+        case CONTROLS.RIGHT:
+        case CONTROLS.DOWN: {
+          game.player.walk(action)
+          break
+        }
+
+        case CONTROLS.A: {
+          game.player.interact()
+          break
+        }
+
+        default: {
+          break
+        }
       }
-    }
+    })
   }
 
   const save = {
@@ -48,7 +60,7 @@ export async function createGame({ view, setMessage }) {
   await prepareGame(game, view)
 
   if (!save.position) {
-    loadText("welcome", setMessage)
+    game.events.welcome()
     game.player.position = { x: SIZE * 3, y: SIZE * 6 }
     game.world.location = "PalletTownRooms"
     game.world.layer = "house1 f2"

@@ -109,11 +109,11 @@ export async function createWorld(game) {
     const key = `${x}-${y}`
     const tiles = world.tiles[location + layer]
     if (!tiles) return {}
+    if (!tiles[key]) tiles[key] = {}
     if (data) {
-      if (!tiles[key]) tiles[key] = data
-      else tiles[key] = { ...tiles[key], ...data }
+      tiles[key] = { ...tiles[key], ...data }
     }
-    return tiles[key] || {}
+    return tiles[key]
   }
 
 

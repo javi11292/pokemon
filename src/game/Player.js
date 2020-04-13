@@ -41,6 +41,13 @@ export async function createPlayer(game) {
     }
   }
 
+  function interact() {
+    const event = player.nextTile.data.interact || player.nextTile.data.character?.properties.interact
+    if (event) {
+      game.world.events[event]()
+    }
+  }
+
   const {
     walk: characterWalk,
     face: characterFace,
@@ -48,6 +55,7 @@ export async function createPlayer(game) {
     updateState: characterUpdateState,
   } = player
 
+  player.interact = interact
   player.still = still
   player.face = face
   player.walk = walk

@@ -6,6 +6,8 @@ export const CONTROLS = {
   LEFT: "left",
   RIGHT: "right",
   DOWN: "down",
+  A: "a",
+  B: "b",
 }
 
 export const CHARACTERS = {

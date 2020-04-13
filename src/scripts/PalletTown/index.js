@@ -1,12 +1,15 @@
 import { getEventsDB } from "libraries/database"
 import { CHARACTERS, SIZE } from "libraries/constants"
+import { sendMessage } from "libraries/util"
 
 const database = getEventsDB("PalletTown")
 
 export function getEvents(game) {
+  const setMessage = sendMessage(game)
+
   const events = {
     async meetOak() {
-      if (await database.getItem("meetOak")) return
+      //if (await database.getItem("meetOak")) return
 
       async function goToLaboratory(character) {
         if (character === player) {
@@ -90,17 +93,15 @@ export function getEvents(game) {
         goUp(player).then(() => player.still("right")),
       ])
 
-      await setMessage("Elige uno de los pokemon sobre la mesa")
+      character.properties = { interact: "choosePokemon" }
+
+      player.event = () => player.direction === "right"
+      await player.event
+      player.interact()
 
       game.enableControls = true
       database.setItem("meetOak", true)
     },
-  }
-
-  function setMessage(value) {
-    return new Promise(resolve => {
-      game.setMessage({ value, callback: resolve })
-    })
   }
 
   return events

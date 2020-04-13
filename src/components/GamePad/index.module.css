@@ -1,4 +1,5 @@
-.root {
+.pad {
+  pointer-events: none;
   position: absolute;
   top: 90%;
   left: 2rem;
@@ -14,20 +15,19 @@
   display: grid;
   grid-template-rows: 1fr auto;
   transform: rotate(var(--rotate));
-  opacity: 0.75;
 }
 
 .button * {
-  pointer-events: none;
+  opacity: 0.75;
 }
 
-.button :first-child {
+.button :nth-child(1) {
   fill: var(--color);
   stroke: black;
   stroke-width: 2px;
 }
 
-.button :last-child {
+.button :nth-child(2) {
   pointer-events: auto;
   fill: transparent;
 }
@@ -41,10 +41,29 @@
 .triangle {
   grid-area: triangle;
   transform: rotate(var(--rotate));
-  pointer-events: none;
 }
 
 .triangle * {
   fill: transparent;
+  pointer-events: auto;
+}
+
+.actions {
+  pointer-events: none;
+  position: absolute;
+  top: 90%;
+  right: 2rem;
+  transform: translateY(-100%);
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 1.5rem;
+}
+
+.actions>* {
+  width: 5rem;
+  height: 5rem;
+}
+
+.actions .button *{
   pointer-events: auto;
 }

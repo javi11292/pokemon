@@ -101,7 +101,7 @@ export async function createCharacter(game, id, container, x, y) {
     const speedX = character.direction === CONTROLS.RIGHT ? 1 : character.direction === CONTROLS.LEFT ? -1 : 0
     const speedY = character.direction === CONTROLS.DOWN ? 1 : character.direction === CONTROLS.UP ? -1 : 0
 
-    if (character.state === STATES.WALK && !character.speed.x && !character.speed.y) updateNextTile(speedX, speedY)
+    if (!character.speed.x && !character.speed.y) updateNextTile(speedX, speedY)
 
     if (event && event.check()) {
       event = null
@@ -134,8 +134,6 @@ export async function createCharacter(game, id, container, x, y) {
   function updateNextTile(speedX, speedY) {
     const nextX = Math.floor(position.x / SIZE + speedX)
     const nextY = Math.floor(position.y / SIZE + speedY)
-
-    if (character.nextTile.x === nextX && character.nextTile.y === nextY) return
 
     const data = character.game.world.tileAt(nextX, nextY)
 
