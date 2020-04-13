@@ -6,7 +6,7 @@ const database = getEventsDB("PalletTown")
 export function getEvents(game) {
   const events = {
     async meetOak() {
-      //if (await database.getItem("meetOak")) return
+      if (await database.getItem("meetOak")) return
 
       async function goToLaboratory(character) {
         if (character === player) {
@@ -55,8 +55,8 @@ export function getEvents(game) {
       character.still("up")
 
       await setMessage(`
-      No puedes irte por ahí a lo loco sin un pokemon, ¿es que no has visto la noticia del niño que murió incinerado por un charmander?
-      ¿Y la señora que estaba recogiendo la ropa tendida felizmente cuando vino un magikarp y se la chapoteó entera? Sígueme anda, que te doy uno.
+      No puedes irte por ahí a lo loco sin un pokemon, ¿es que no has visto la noticia del niño que murió incinerado por un charizard?
+      ¿Y la señora que estaba recogiendo la ropa del tendedero felizmente cuando vino un magikarp y se la chapoteó entera? Sígueme anda, que te doy uno.
       `)
 
       await Promise.all([

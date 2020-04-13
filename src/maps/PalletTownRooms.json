@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":12,
  "infinite":false,
  "layers":[
@@ -228,7 +235,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -239,7 +246,7 @@
          "name":"laboratory",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":10,
          "x":0,
          "y":0
@@ -294,6 +301,18 @@
                  "width":16,
                  "x":80,
                  "y":192
+                }, 
+                {
+                 "gid":1683,
+                 "height":16,
+                 "id":14,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":80,
+                 "y":48
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -302,7 +321,7 @@
          "y":0
         }],
  "nextlayerid":13,
- "nextobjectid":14,
+ "nextobjectid":15,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.3.3",
@@ -311,6 +330,10 @@
         {
          "firstgid":1,
          "source":"..\/images\/data\/world.json"
+        }, 
+        {
+         "firstgid":1559,
+         "source":"..\/images\/data\/characters.json"
         }],
  "tilewidth":16,
  "type":"map",

@@ -2,7 +2,7 @@ import { Spritesheet, AnimatedSprite, Loader, groupD8 } from "pixi.js"
 import localForage from "localforage"
 import texture from "images/characters.png"
 import { upperCase } from "libraries/util"
-import { CONTROLS, SIZE, SPEED } from "libraries/constants"
+import { CONTROLS, SIZE, SPEED, CHARACTERS } from "libraries/constants"
 
 const TILE_SIZE = 16
 const COLUMNS = 8
@@ -18,7 +18,7 @@ export async function createCharacter(game, id, container, x, y) {
     loadingResources = await loadResources()
   }
 
-  const database = localForage.createInstance({ name: id })
+  const database = localForage.createInstance({ name: id, storeName: id !== CHARACTERS.PLAYER ? game.world.location + game.world.layer : "index" })
 
   const character = {
     database,
@@ -69,7 +69,9 @@ export async function createCharacter(game, id, container, x, y) {
       position.x = newPosition.x
       position.y = newPosition.y
     },
-    textures: {
+    // common fields
+    spritesheet: characters[id]?.spritesheet,
+    textures: characters[id]?.textures || {
       stillDown: [],
       stillUp: [],
       stillLeft: [],
@@ -109,7 +111,7 @@ export async function createCharacter(game, id, container, x, y) {
       character.state === STATES.WALK &&
       !character.speed.x && !character.speed.y &&
       character.nextTile.data.collision === false &&
-      !character.nextTile.data.character?.collision === true
+      (character.nextTile.data.character?.properties.visible !== true || character.nextTile.data.character?.collision !== true)
     ) {
       character.speed.x = speedX
       character.speed.y = speedY
@@ -180,31 +182,36 @@ export async function createCharacter(game, id, container, x, y) {
     character.sprite.play()
   }
 
-  function addSpriteSheet() {
-    const spriteSheet = new Spritesheet(resources.characters.texture, getData(id))
+  function addSpritesheet() {
+    const spritesheet = new Spritesheet(resources.characters.texture, getData(id))
+    character.spritesheet = spritesheet
 
-    spriteSheet.parse(() => {
-      character.textures.stillDown = [spriteSheet.textures["stillDown" + id]]
-      character.textures.stillUp = [spriteSheet.textures["stillUp" + id]]
-      character.textures.stillLeft = [spriteSheet.textures["stillLeft" + id]]
-      character.textures.stillRight = [spriteSheet.textures["stillRight" + id]]
-
-      character.textures.walkDown = getTextures(spriteSheet, "walkDown")
-      character.textures.walkUp = getTextures(spriteSheet, "walkUp")
-      character.textures.walkLeft = getTextures(spriteSheet, "walkLeft")
-      character.textures.walkRight = getTextures(spriteSheet, "walkRight")
-
-      const sprite = new AnimatedSprite(character.textures[character.state + upperCase(character.direction)])
-      character.sprite = sprite
-
-      sprite.width = SIZE
-      sprite.height = SIZE
-      sprite.animationSpeed = 0.1
-      sprite.x = x
-      sprite.y = y
-
-      container.addChild(sprite)
+    spritesheet.parse(() => {
+      loadSprite()
     })
+  }
+
+  function loadSprite() {
+    character.textures.stillDown = [character.spritesheet.textures["stillDown" + id]]
+    character.textures.stillUp = [character.spritesheet.textures["stillUp" + id]]
+    character.textures.stillLeft = [character.spritesheet.textures["stillLeft" + id]]
+    character.textures.stillRight = [character.spritesheet.textures["stillRight" + id]]
+
+    character.textures.walkDown = getTextures(character.spritesheet, "walkDown")
+    character.textures.walkUp = getTextures(character.spritesheet, "walkUp")
+    character.textures.walkLeft = getTextures(character.spritesheet, "walkLeft")
+    character.textures.walkRight = getTextures(character.spritesheet, "walkRight")
+
+    const sprite = new AnimatedSprite(character.textures[character.state + upperCase(character.direction)])
+    character.sprite = sprite
+
+    sprite.width = SIZE
+    sprite.height = SIZE
+    sprite.animationSpeed = 0.1
+    sprite.x = x
+    sprite.y = y
+
+    container.addChild(sprite)
   }
 
   let event = null
@@ -212,9 +219,12 @@ export async function createCharacter(game, id, container, x, y) {
   const properties = await database.getItem("properties") || {}
   const position = await createPosition(character, database, x, y)
 
-  addSpriteSheet()
+  if (!characters[id]) addSpritesheet()
+  else loadSprite()
 
   character.game.app.ticker.add(update)
+
+  characters[id] = character
 
   return character
 }
@@ -357,3 +367,4 @@ function createEvent(callback) {
 
 let resources = null
 let loadingResources = null
+const characters = {}
