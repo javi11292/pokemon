@@ -9,6 +9,6 @@ export const CONTROLS = {
 }
 
 export const CHARACTERS = {
-  PLAYER: 118,
-  OAK: 124,
+  PLAYER: 0,
+  OAK: 21,
 }

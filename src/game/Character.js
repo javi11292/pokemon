@@ -62,14 +62,14 @@ export async function createCharacter(game, id, container, x, y) {
       return position
     },
     set position(newPosition) {
-      if (position.x % SIZE === 0 && position.y % SIZE === 0) {
-        game.world.tileAt(position.x / SIZE, position.y, { character: null })
-      }
+      game.world.tileAt(position.x / SIZE, position.y, { character: null })
+      nextTile = { data: {} }
 
       position.x = newPosition.x
       position.y = newPosition.y
     },
-    // common fields
+
+    // common fields for all characters with same id
     spritesheet: characters[id]?.spritesheet,
     textures: characters[id]?.textures || {
       stillDown: [],
@@ -111,7 +111,7 @@ export async function createCharacter(game, id, container, x, y) {
       character.state === STATES.WALK &&
       !character.speed.x && !character.speed.y &&
       character.nextTile.data.collision === false &&
-      (character.nextTile.data.character?.properties.visible !== true || character.nextTile.data.character?.collision !== true)
+      (character.nextTile.data.character?.properties.visible === false || character.nextTile.data.character?.collision !== true)
     ) {
       character.speed.x = speedX
       character.speed.y = speedY

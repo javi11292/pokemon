@@ -1,4 +1,12 @@
 { "columns":38,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
  "image":"..\/world.png",
  "imageheight":656,
  "imagewidth":608,
@@ -101,6 +109,33 @@
         }, 
         {
          "id":1064,
+         "properties":[
+                {
+                 "name":"collision",
+                 "type":"bool",
+                 "value":false
+                }]
+        }, 
+        {
+         "id":1068,
+         "properties":[
+                {
+                 "name":"collision",
+                 "type":"bool",
+                 "value":false
+                }]
+        }, 
+        {
+         "id":1069,
+         "properties":[
+                {
+                 "name":"collision",
+                 "type":"bool",
+                 "value":false
+                }]
+        }, 
+        {
+         "id":1070,
          "properties":[
                 {
                  "name":"collision",

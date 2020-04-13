@@ -32,7 +32,13 @@ export function getEvents(game) {
         await character.event
       }
 
-      const character = game.characters[CHARACTERS.OAK]
+      async function goUp(character) {
+        character.walk("up")
+        character.event = () => character.nextTile.y === 2
+        await character.event
+      }
+
+      let character = game.characters[CHARACTERS.OAK]
       const { player } = game
 
       await setMessage("¡Eh tú, espera!")
@@ -40,9 +46,11 @@ export function getEvents(game) {
       character.collision = false
       player.still("down")
 
-      character.position.x = 9 * SIZE
-      character.position.y = 7 * SIZE
       character.properties = { visible: true }
+      character.position = {
+        x: 9 * SIZE,
+        y: 7 * SIZE,
+      }
 
       character.walk("up")
       character.event = () => character.nextTile.y === 3
@@ -64,7 +72,26 @@ export function getEvents(game) {
         goToLaboratory(player).then(() => player.still())
       ])
 
+
+      player.event = () => game.characters[CHARACTERS.OAK] !== character
+      await player.event
+
       character.collision = true
+
+      character = game.characters[CHARACTERS.OAK]
+      character.direction = "up"
+      character.position = {
+        x: 5 * SIZE,
+        y: 10 * SIZE,
+      }
+
+      await Promise.all([
+        goUp(character).then(() => character.still("left")),
+        goUp(player).then(() => player.still("right")),
+      ])
+
+      await setMessage("Elige uno de los pokemon sobre la mesa")
+
       game.enableControls = true
       database.setItem("meetOak", true)
     },
