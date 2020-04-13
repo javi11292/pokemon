@@ -19,11 +19,11 @@ export async function createCharacter(game, id, container, x, y) {
   }
 
   const database = localForage.createInstance({ name: id })
-  const position = await createPosition(database, x, y)
 
   const character = {
     database,
     game,
+    collision: true,
     still,
     face,
     walk,
@@ -32,8 +32,9 @@ export async function createCharacter(game, id, container, x, y) {
       return properties
     },
     set properties(value) {
-      database.setItem("properties", value)
-      properties = value
+      Object.assign(properties, value)
+      database.setItem("properties", properties)
+
       character.sprite.visible = properties.visible !== false
     },
     postUpdate,
@@ -61,6 +62,10 @@ export async function createCharacter(game, id, container, x, y) {
       return position
     },
     set position(newPosition) {
+      if (position.x % SIZE === 0 && position.y % SIZE === 0) {
+        game.world.tileAt(position.x / SIZE, position.y, { character: null })
+      }
+
       position.x = newPosition.x
       position.y = newPosition.y
     },
@@ -100,7 +105,12 @@ export async function createCharacter(game, id, container, x, y) {
       event = null
     }
 
-    if (character.state === STATES.WALK && !character.speed.x && !character.speed.y && character.nextTile.data.collision === false) {
+    if (
+      character.state === STATES.WALK &&
+      !character.speed.x && !character.speed.y &&
+      character.nextTile.data.collision === false &&
+      !character.nextTile.data.character?.collision === true
+    ) {
       character.speed.x = speedX
       character.speed.y = speedY
       updatePosition(character.speed.x ? "x" : "y", true)
@@ -153,10 +163,13 @@ export async function createCharacter(game, id, container, x, y) {
       character.direction = character.nextDirection
       character.nextDirection = null
     }
+
     if (character.nextState) {
       character.state = character.nextState
       character.nextState = null
     }
+
+    game.world.tileAt(position.x / SIZE, position.y / SIZE, { character })
   }
 
   function updateTextures() {
@@ -196,7 +209,8 @@ export async function createCharacter(game, id, container, x, y) {
 
   let event = null
   let nextTile = { data: {} }
-  let properties = await database.getItem("properties") || {}
+  const properties = await database.getItem("properties") || {}
+  const position = await createPosition(character, database, x, y)
 
   addSpriteSheet()
 
@@ -214,8 +228,12 @@ async function loadResources() {
   })
 }
 
-async function createPosition(database, startX, startY) {
-  const positionDB = await await database.getItem("position")
+async function createPosition(character, database, startX, startY) {
+  function removeCharacter() {
+    character.game.world.tileAt(position.x / SIZE, position.y / SIZE, { character: null })
+  }
+
+  const positionDB = await database.getItem("position")
   let x = positionDB?.x ?? startX
   let y = positionDB?.y ?? startY
 
@@ -224,15 +242,23 @@ async function createPosition(database, startX, startY) {
       return x
     },
     set x(newX) {
+      if (x % SIZE === 0) removeCharacter()
+
       x = newX
-      database.setItem("position", { ...position, x })
+      if (x % SIZE === 0) {
+        database.setItem("position", { ...position, x })
+      }
     },
     get y() {
       return y
     },
     set y(newY) {
+      if (y % SIZE === 0) removeCharacter()
+
       y = newY
-      database.setItem("position", { ...position, y })
+      if (y % SIZE === 0) {
+        database.setItem("position", { ...position, y })
+      }
     }
   }
 

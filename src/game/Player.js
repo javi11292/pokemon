@@ -25,8 +25,8 @@ export async function createPlayer(game) {
     else characterWalk(direction)
   }
 
-  function updateState() {
-    characterUpdateState()
+  function updateState(prevTile) {
+    characterUpdateState(prevTile)
 
     const { data } = player.nextTile
     if (data.location || data.layer) {

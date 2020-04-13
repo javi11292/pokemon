@@ -6,25 +6,52 @@ const database = getEventsDB("PalletTown")
 export function getEvents(game) {
   const events = {
     async meetOak() {
-      if (await database.getItem("meetOak")) return
+      //if (await database.getItem("meetOak")) return
+
+      async function goToLaboratory(character) {
+        if (character === player) {
+          character.walk("down")
+          character.event = () => character.nextTile.y === 3
+          await character.event
+        }
+
+        character.walk("left")
+        character.event = () => character.nextTile.x === 9
+        await character.event
+
+        character.walk("down")
+        character.event = () => character.nextTile.y === 12
+        await character.event
+
+        character.walk("right")
+        character.event = () => character.nextTile.x === 12
+        await character.event
+
+        character.walk("up")
+        character.event = () => character.nextTile.y === (character === player ? 11 : 10)
+        await character.event
+      }
 
       const character = game.characters[CHARACTERS.OAK]
       const { player } = game
 
-      game.enableControls = false
       await setMessage("¡Eh tú, espera!")
+      game.enableControls = false
+      character.collision = false
       player.still("down")
+
       character.position.x = 9 * SIZE
       character.position.y = 7 * SIZE
-      character.properties = { ...character.properties, visible: true }
-      character.walk("up")
+      character.properties = { visible: true }
 
+      character.walk("up")
       character.event = () => character.nextTile.y === 3
       await character.event
-      character.walk("right")
 
+      character.walk("right")
       character.event = () => character.nextTile.x === player.position.x / SIZE
       await character.event
+
       character.still("up")
 
       await setMessage(`
@@ -32,6 +59,12 @@ export function getEvents(game) {
       ¿Y la señora que estaba recogiendo la ropa tendida felizmente cuando vino un magikarp y se la chapoteó entera? Sígueme anda, que te doy uno.
       `)
 
+      await Promise.all([
+        goToLaboratory(character).then(() => character.properties = { visible: false }),
+        goToLaboratory(player).then(() => player.still())
+      ])
+
+      character.collision = true
       game.enableControls = true
       database.setItem("meetOak", true)
     },

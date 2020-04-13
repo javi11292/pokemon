@@ -19,6 +19,7 @@ export async function createGame({ view, setMessage }) {
   function handleAction({ detail }) {
     if (!game.enableControls) {
       game.action = null
+      return
     } else {
       game.action = detail
     }

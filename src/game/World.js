@@ -105,9 +105,15 @@ export async function createWorld(game) {
     if (position) world.game.player.position = position
   }
 
-  function tileAt(x, y) {
-    if (!world.tiles[location + layer]) return {}
-    return world.tiles[location + layer][`${x}-${y}`] || {}
+  function tileAt(x, y, data) {
+    const key = `${x}-${y}`
+    const tiles = world.tiles[location + layer]
+    if (!tiles) return {}
+    if (data) {
+      if (!tiles[key]) tiles[key] = data
+      else tiles[key] = { ...tiles[key], ...data }
+    }
+    return tiles[key] || {}
   }
 
 
