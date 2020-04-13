@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "605466f822c9b401aace47b5690860b9",
+    "revision": "eec9d2153cb5af91006672ba485a51f2",
     "url": "/pokemon/index.html"
   },
   {
@@ -8,8 +8,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/pokemon/static/css/main.a501546a.chunk.css"
   },
   {
-    "revision": "44049360a0ed33a07fec",
-    "url": "/pokemon/static/js/0.b94cc492.chunk.js"
+    "revision": "6cb7023fc6cb5d84453b",
+    "url": "/pokemon/static/js/0.335fd376.chunk.js"
   },
   {
     "revision": "23689f7e493abac9de9b",
@@ -24,32 +24,32 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/pokemon/static/js/4.805da41b.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "02af5b395b05524e25bb",
-    "url": "/pokemon/static/js/5.5774affd.chunk.js"
+    "revision": "8d0b884b00807df34f09",
+    "url": "/pokemon/static/js/5.48795a4e.chunk.js"
   },
   {
     "revision": "177bc60a4fb95afc0a46a2444ff94f2b",
-    "url": "/pokemon/static/js/5.5774affd.chunk.js.LICENSE.txt"
+    "url": "/pokemon/static/js/5.48795a4e.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "02542e992fae798d1072",
-    "url": "/pokemon/static/js/6.80977a84.chunk.js"
+    "revision": "2c8df2c96173c8d2b9a9",
+    "url": "/pokemon/static/js/6.37e5751e.chunk.js"
   },
   {
-    "revision": "2cf1c1a3195d950e6463",
-    "url": "/pokemon/static/js/7.088e4d0a.chunk.js"
+    "revision": "ec02cd7ab77c9c65688e",
+    "url": "/pokemon/static/js/7.92fb3dd9.chunk.js"
   },
   {
-    "revision": "c35cfbea01e1f6d6b3ba",
-    "url": "/pokemon/static/js/8.cf9c0d8e.chunk.js"
+    "revision": "c8ae302a9e24196d05c5",
+    "url": "/pokemon/static/js/8.ab42ec85.chunk.js"
   },
   {
     "revision": "0f4e876ed72b7c8d201a",
     "url": "/pokemon/static/js/main.f4179305.chunk.js"
   },
   {
-    "revision": "08b019d3af4b13652e3e",
-    "url": "/pokemon/static/js/runtime-main.d325bea0.js"
+    "revision": "8e3c04e20b2d5f7fd01a",
+    "url": "/pokemon/static/js/runtime-main.6e7db9aa.js"
   },
   {
     "revision": "7153730c3844dd0c3f57f8203532a2f8",
