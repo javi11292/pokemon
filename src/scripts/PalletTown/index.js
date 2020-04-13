@@ -8,26 +8,31 @@ export function getEvents(game) {
     async meetOak() {
       if (await database.getItem("meetOak")) return
 
-      game.enableControls = false
-      await setMessage("¡Eh tu, espera!")
       const character = game.characters[CHARACTERS.OAK]
+      const { player } = game
+
+      game.enableControls = false
+      await setMessage("¡Eh tú, espera!")
+      player.still("down")
       character.position.x = 9 * SIZE
       character.position.y = 7 * SIZE
       character.properties = { ...character.properties, visible: true }
       character.walk("up")
 
       character.event = () => character.nextTile.y === 3
-      await character.event.promise
+      await character.event
       character.walk("right")
 
-      character.event = () => character.nextTile.x === character.game.player.position.x / SIZE
-      await character.event.promise
-      character.walk("up")
+      character.event = () => character.nextTile.x === player.position.x / SIZE
+      await character.event
+      character.still("up")
 
-      character.event = () => character.nextTile.y === 2
-      await character.event.promise
-      character.still()
+      await setMessage(`
+      No puedes irte por ahí a lo loco sin un pokemon, ¿es que no has visto la noticia del niño que murió incinerado por un charmander?
+      ¿Y la señora que estaba recogiendo la ropa tendida felizmente cuando vino un magikarp y se la chapoteó entera? Sígueme anda, que te doy uno.
+      `)
 
+      game.enableControls = true
       database.setItem("meetOak", true)
     },
   }

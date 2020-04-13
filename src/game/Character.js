@@ -39,7 +39,7 @@ export async function createCharacter(game, id, container, x, y) {
     postUpdate,
     onNextTileUpdate: () => { },
     get event() {
-      return event
+      return event.promise
     },
     set event(newEvent) {
       event = createEvent(newEvent)
@@ -76,8 +76,9 @@ export async function createCharacter(game, id, container, x, y) {
     },
   }
 
-  function still() {
+  function still(direction) {
     character.nextState = STATES.STILL
+    if (direction) character.nextDirection = direction
   }
 
   function face(direction) {

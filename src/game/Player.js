@@ -10,8 +10,8 @@ export async function createPlayer(game) {
     game.app.screen.height / 2 - SIZE / 2,
   )
 
-  function still() {
-    characterStill()
+  function still(direction) {
+    characterStill(direction)
     clearTimeout(faceTimeout)
   }
 
